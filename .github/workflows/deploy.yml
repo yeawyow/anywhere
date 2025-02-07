@@ -1,4 +1,4 @@
-name: Deploy React & Node.js to HostNeverDie
+name: Deploy React App to HostNeverDie
 
 on:
   push:
@@ -12,34 +12,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Install Dependencies (Client)
-        run: |
-          cd client
-          npm install
-
       - name: Build React App
         run: |
-          cd client
-          npm run build
+          # หากโปรเจกต์ React ของคุณไม่ได้ใช้ Node.js ที่นี่แค่ต้องใช้ขั้นตอน Build React
+          # ถ้าคุณไม่ใช้ Node.js ก็สามารถข้ามการติดตั้ง dependencies และ build ได้เลย
+          echo "No build needed for non-Node.js projects"
 
-      - name: Debug Build Output  # ✅ ตรวจสอบว่าไฟล์ถูก Build หรือไม่
-        run: ls -lah dist/
+      - name: Debug Build Output  # ตรวจสอบว่าไฟล์ถูกสร้างหรือไม่
+        run: ls -lah dist/  # หรือ `build/` ขึ้นอยู่กับว่า React สร้างไฟล์ที่ไหน
 
       - name: Deploy Client via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
             server: ${{ secrets.FTP_HOST }}
             username: ${{ secrets.FTP_USER }}
-            password: ${{ secrets.FTP_PASSWORD }}  # ตรวจสอบว่าชื่อถูกต้อง!
-            port: 2121
-            protocol: ftp  # ✅ ถ้า HostNeverDie รองรับ FTPS ให้เพิ่มบรรทัดนี้
-            local-dir: dist/
+            password: ${{ secrets.FTP_PASSWORD }}
+            port: 2121  # ใช้พอร์ตที่เซิร์ฟเวอร์รองรับ
+            protocol: ftps  # ใช้ `ftps` ถ้าเซิร์ฟเวอร์รองรับ FTPS
+            local-dir: dist/  # หรือ `build/` ขึ้นอยู่กับที่คุณสร้างไฟล์
             server-dir: public_html/
-        
-
-  
