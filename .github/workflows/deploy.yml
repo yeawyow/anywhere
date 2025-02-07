@@ -28,7 +28,7 @@ jobs:
           npm run build
 
       - name: Debug Build Output  # ✅ ตรวจสอบว่าไฟล์ถูก Build หรือไม่
-        run: ls -lah client/dist
+        run: ls -lah dist/
 
       - name: Deploy Client via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
