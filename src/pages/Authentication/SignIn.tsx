@@ -1,12 +1,27 @@
-import React from 'react';
+import React,{useState} from 'react';
 //import { Link } from 'react-router-dom';
 // import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 //import LogoDark from '../../images/logo/logo-dark.svg';
 //import Logo from '../../images/logo/logo.svg';
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 import { APP_NAME, INSTITUION } from '../../config/constants';
 import { CiUser,CiLock } from "react-icons/ci";
+import { loginUser, selectAuth } from "../../features/auth/authslice";
 
+import { AppDispatch } from '../../app/store';
 const SignIn: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading, error } = useSelector(selectAuth);
+  const [user_national_id, setUser] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const result = await dispatch(loginUser({ user_national_id, password }));
+    if (loginUser.fulfilled.match(result)) navigate("/");
+  };
   return (
     <>
       {/* <Breadcrumb pageName="Sign In" /> */}
@@ -156,14 +171,15 @@ const SignIn: React.FC = () => {
              {APP_NAME}
               </h3>
               <span className="mb-1.5 block font-normal text-center">{INSTITUION}</span>
-              <form>
+              <form onSubmit={handleLogin}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     username
                   </label>
                   <div className="relative">
                     <input
-                      type="email"
+                    onChange={(e) => setUser(e.target.value)}
+                      type="text"
                       placeholder="Enter your username"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -181,7 +197,8 @@ const SignIn: React.FC = () => {
                   </label>
                   <div className="relative">
                     <input
-                      type="password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
                       placeholder="Enter your Password"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -193,11 +210,8 @@ const SignIn: React.FC = () => {
                 </div>
 
                 <div className="mb-5">
-                  <input
-                    type="submit"
-                    value="Sign In"
-                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
-                  />
+                        <button className="w-full rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"  type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
+
                 </div>
 
                 <button disabled className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
@@ -237,14 +251,11 @@ const SignIn: React.FC = () => {
                   Sign in with Google
                 </button>
 
-                {/* <div className="mt-6 text-center">
-                  <p>
-                    Don’t have any account?{' '}
-                    <Link to="/auth/signup" className="text-primary">
-                      Sign Up
-                    </Link>
-                  </p>
-                </div> */}
+                <div className="mt-6 text-center">
+                 
+                  {error && <p style={{ color: "red" }}>{error}</p>}
+                
+                </div>
               </form>
             </div>
           </div>

@@ -1,21 +1,21 @@
-import React,{ useEffect, useState } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProtectRoute from '../Router/'; // ปรับตามชื่อไฟล์ที่ใช้
 import DefaultLayout from '../layout/DefaultLayout';
 import BlankLayout from '../layout/BlankLayout';
 import Loader from '../common/Loader';
 
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 
 // 🔹 Import JSON Routes
 import routesData from './routes.json';
-
 import SignIn from '../pages/Authentication/SignIn';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import Profile from '../pages/Profile';
 import PageTitle from '../components/PageTitle';
 import PageAceess from '../pages/PageAceess';
+import { verifyToken } from '../hooks/vertifytoken';
 
 const componentsMap: { [key: string]: React.ElementType } = {
   SignIn,
@@ -56,7 +56,7 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
               path={path}
               element={
                 isProtected ? (
-                  isAuthenticated ? (
+                  isAuthenticated && verifyToken() ? (
                     <ProtectRoute>{RouteElement}</ProtectRoute> // ถ้าต้องการการยืนยันตัวตน
                   ) : (
                     <SignIn /> // ถ้ายังไม่ได้ล็อกอินจะให้ไปหน้า SignIn
