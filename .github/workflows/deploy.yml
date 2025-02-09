@@ -18,7 +18,7 @@ jobs:
           npm run build  # สร้างไฟล์ production
 
       - name: Debug Build Output  # ตรวจสอบว่าไฟล์ถูกสร้างหรือไม่
-        run: ls -lah build/  # ต้องเป็น `build/` ไม่ใช่ `dist/`
+        run: ls -lah dist/  # ต้องเป็น `build/` ไม่ใช่ `dist/`
 
       - name: Deploy Client via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -28,5 +28,5 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: 2121  # พอร์ตของโฮสต์
           protocol: ftps  # ใช้ `ftps` ถ้าเซิร์ฟเวอร์รองรับ FTPS
-          local-dir: build/  # React สร้างไฟล์ที่ `build/`
+          local-dir: dist/  # React สร้างไฟล์ที่ `build/`
           server-dir: public_html/  # ปรับให้ตรงกับโฮสต์ของคุณ
