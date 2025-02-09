@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React,{useEffect} from 'react';
+import { Routes, Route,useNavigate } from 'react-router-dom';
 import ProtectRoute from '../Router/'; // ปรับตามชื่อไฟล์ที่ใช้
 import DefaultLayout from '../layout/DefaultLayout';
 import BlankLayout from '../layout/BlankLayout';
@@ -17,6 +17,7 @@ import PageTitle from '../components/PageTitle';
 import PageAceess from '../pages/PageAceess';
 import { verifyToken } from '../hooks/vertifytoken';
 
+
 const componentsMap: { [key: string]: React.ElementType } = {
   SignIn,
   Dashboard,
@@ -30,10 +31,17 @@ const layoutMap: { [key: string]: React.ElementType } = {
 };
 
 const AppRoutes = ({ loading }: { loading: boolean }) => {
-  // const dispatch = useDispatch();
+    const navigate = useNavigate();
+  
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-
-  // ไม่จำเป็นต้องใช้ isReady ถ้าใช้ loading
+useEffect(()=>{
+ const checkvertify= verifyToken()
+ if (checkvertify) {
+      
+      navigate("/"); // เปลี่ยนเส้นทางไปที่หน้าหลัก
+  //   }
+}},[navigate])
+  
   if (loading) return <Loader />; // ถ้าแอปกำลังโหลดให้แสดง Loader
 
   return (

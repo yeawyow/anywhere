@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 //import { Link } from 'react-router-dom';
 // import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 //import LogoDark from '../../images/logo/logo-dark.svg';
@@ -9,19 +9,26 @@ import { APP_NAME, INSTITUION } from '../../config/constants';
 import { CiUser,CiLock } from "react-icons/ci";
 import { loginUser, selectAuth } from "../../features/auth/authslice";
 
-import { AppDispatch } from '../../app/store';
+import { AppDispatch,RootState } from '../../app/store';
 const SignIn: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector(selectAuth);
   const [user_national_id, setUser] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const result = await dispatch(loginUser({ user_national_id, password }));
     if (loginUser.fulfilled.match(result)) navigate("/");
   };
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+      
+  //     navigate("/"); // เปลี่ยนเส้นทางไปที่หน้าหลัก
+  //   }
+  // }, [isAuthenticated, navigate]);
   return (
     <>
       {/* <Breadcrumb pageName="Sign In" /> */}
@@ -174,7 +181,7 @@ const SignIn: React.FC = () => {
               <form onSubmit={handleLogin}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    username5
+                    username
                   </label>
                   <div className="relative">
                     <input
