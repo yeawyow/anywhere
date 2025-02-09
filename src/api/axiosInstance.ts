@@ -16,4 +16,13 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  response => response, 
+  error => {
+    if (error.response && error.response.status === 401) {
+      // จัดการกับกรณี token หมดอายุ เช่น การรีไดเรกต์ไปหน้า login หรือ รีเฟรช token
+    }
+    return Promise.reject(error);
+  }
+);
 export default api;

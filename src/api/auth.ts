@@ -10,7 +10,7 @@ interface LoginResponse {
 }
 
 export const loginApi = async (user_national_id: string, password: string): Promise<LoginResponse> => {
-  const response = await api.post<LoginResponse>("api/auth/login", { user_national_id, password });
+  const response = await api.post<LoginResponse>("api/auth/login", { user_national_id, password }, { withCredentials: true } ) // เพิ่ม withCredentials เพื่อส่ง cookies);
   console.log(response.data); // ตรวจสอบ Response
   return response.data;
 };
