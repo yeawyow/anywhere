@@ -16,7 +16,7 @@ const SignIn: React.FC = () => {
   const [user_national_id, setUser] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  // const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
