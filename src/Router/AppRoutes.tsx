@@ -34,13 +34,13 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
     const navigate = useNavigate();
   
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-useEffect(()=>{
- const checkvertify= verifyToken()
- if (checkvertify) {
+// useEffect(()=>{
+//  const checkvertify= verifyToken()
+//  if (checkvertify) {
       
-      navigate("/"); // เปลี่ยนเส้นทางไปที่หน้าหลัก
-  //   }
-}},[navigate])
+//       navigate("/"); // เปลี่ยนเส้นทางไปที่หน้าหลัก
+//   //   }
+// }},[navigate])
   
   if (loading) return <Loader />; // ถ้าแอปกำลังโหลดให้แสดง Loader
 
