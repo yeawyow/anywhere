@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import {useState} from 'react';
 //import { Link } from 'react-router-dom';
 // import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 //import LogoDark from '../../images/logo/logo-dark.svg';
@@ -200,7 +200,7 @@ const SignIn: React.FC = () => {
 
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                     Passwordp
+                     Password
                   </label>
                   <div className="relative">
                     <input
