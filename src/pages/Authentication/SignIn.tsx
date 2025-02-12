@@ -200,7 +200,7 @@ const SignIn: React.FC = () => {
 
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                     Password
+                     Password5
                   </label>
                   <div className="relative">
                     <input
