@@ -41,7 +41,7 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
      const isValid= await   verifyToken(dispatch);
    setCheckingAuth(false)
     if (isValid) {
-      navigate(location.pathname, { replace: true }); // ✅ นำทางไปยังหน้าปัจจุบันแทนการกลับไป '/'
+      navigate(window.location.pathname || "/", { replace: true }); // ✅ ถ้าไม่มี pathname ให้ไปที่ "/"
 
     } } 
     if (token) {
@@ -49,16 +49,16 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
     } else {
       setCheckingAuth(false); // ถ้าไม่ authenticated ไม่ต้องรอ token
     }
-  }, [navigate,dispatch, location.pathname]);
+  }, [navigate,dispatch, window.location.pathname]);
 
   if (loading || checkingAuth) return <Loader />;
   if (!isAuthenticated) {
     // ✅ ถ้าผู้ใช้ยังไม่ได้ล็อกอิน และอยู่ที่ /signin → แสดงหน้า SignIn
-    return location.pathname === '/signin' ? <SignIn /> : <Navigate to="/login" replace />;
+    return window.location.pathname === '/login' ? <SignIn /> : <Navigate to="/login" replace />;
   }
   
   // ✅ ถ้าผู้ใช้ล็อกอินแล้ว แต่พยายามเข้าหน้า /signin → ให้ Redirect ไป Dashboard (/)
-  if (isAuthenticated && location.pathname === '/login') {
+  if (isAuthenticated && window.location.pathname === '/login') {
     return <Navigate to="/" replace />;
   }
   return (

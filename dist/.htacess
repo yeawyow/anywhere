@@ -1,9 +1,0 @@
-RewriteEngine On
-
-# ถ้าไฟล์หรือโฟลเดอร์มีอยู่จริง ให้แสดงตามปกติ
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
-
-# ถ้าไม่มีไฟล์หรือโฟลเดอร์ ให้ redirect ไปที่ index.html
-RewriteRule ^ index.html [L]
