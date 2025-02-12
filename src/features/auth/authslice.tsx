@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk,PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
  import { loginApi } from "../../api/auth";
 // import axios from 'axios';
@@ -8,7 +8,7 @@ import { RootState } from "../../app/store";
 // ประเภทของข้อมูลผู้ใช้
 
 interface AuthState {
-  token: string;
+  //token: string;
   loading: boolean;
   error: string | null;
   isAuthenticated:boolean;
@@ -17,7 +17,7 @@ interface AuthState {
 
 // ค่าตั้งต้นของ State
 const initialState: AuthState = {
-  token: '',
+ // token: '',
   loading: false,
   error: null,
   isAuthenticated:false
@@ -62,7 +62,9 @@ export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {setAuth: (state, action: PayloadAction<boolean>) => {
+    state.isAuthenticated = action.payload;
+  }},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -71,20 +73,21 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.token = action.payload;
+       // state.token = action.payload;
         state.isAuthenticated=true;
-        localStorage.setItem('token',state.token);
+        localStorage.setItem('token',action.payload);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-        state.token = '';
+       // state.token = '';
       });
   },
 });
 
 // Export Selector
+export const { setAuth } = authSlice.actions;
 export const selectAuth = (state: RootState) => state.auth;
 export default authSlice.reducer;

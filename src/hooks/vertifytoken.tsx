@@ -1,20 +1,18 @@
-// ฟังก์ชันตรวจสอบ Token
-export const verifyToken = () => {
-    const token = localStorage.getItem("token");
+import api from "../api/axiosInstance";
+import { setAuth } from "../features/auth/authslice";
+
+
+export const verifyToken = async (dispatch: any) => {
   
-    // ตรวจสอบว่า token มีหรือไม่
-    if (!token) {
-      return false;
+  try {
+    const response = await api.post("api/auth/verifyToken"); // API ตรวจสอบ token
+    if (response.data.valid) {
+      dispatch(setAuth(true)); // ✅ อัปเดต Redux state
+      return true;
     }
-  
-    // ถอดข้อมูลจาก JWT Token
-    const payload = JSON.parse(atob(token.split(".")[1])); // ถอดข้อมูลจาก JWT token
-    const currentTime = Date.now() / 1000; // เวลาปัจจุบันในหน่วยวินาที
-  
-    if (payload.exp < currentTime) {
-      localStorage.removeItem("token"); // ลบ token ออกจาก localStorage ถ้าหมดอายุ
-      return false;
-    }
-  
-    return true; // token ยังไม่หมดอายุ
-  };
+    return false;
+  } catch (error) {
+    console.error("Token verification failed:", error);
+    return false; // ถ้ามี error ให้ถือว่า token ใช้ไม่ได้
+  }
+};

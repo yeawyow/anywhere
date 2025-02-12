@@ -1,11 +1,11 @@
-import React,{useEffect} from 'react';
-import { Routes, Route,useNavigate } from 'react-router-dom';
+import React, { useEffect,useState } from 'react';
+import { Routes, Route, useNavigate,Navigate } from 'react-router-dom';
 import ProtectRoute from '../Router/'; // ปรับตามชื่อไฟล์ที่ใช้
 import DefaultLayout from '../layout/DefaultLayout';
 import BlankLayout from '../layout/BlankLayout';
 import Loader from '../common/Loader';
 
-import {  useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import { RootState } from '../app/store';
 
 // 🔹 Import JSON Routes
@@ -31,20 +31,38 @@ const layoutMap: { [key: string]: React.ElementType } = {
 };
 
 const AppRoutes = ({ loading }: { loading: boolean }) => {
-    const navigate = useNavigate();
-  
+  const navigate = useNavigate();
+  const [checkingAuth, setCheckingAuth] = useState(true);
+ const token=localStorage.getItem('token')
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-// useEffect(()=>{
-//  const checkvertify= verifyToken()
-//  if (checkvertify) {
-      
-//       navigate("/"); // เปลี่ยนเส้นทางไปที่หน้าหลัก
-//   //   }
-// }},[navigate])
-  
-  if (loading) return <Loader />; // ถ้าแอปกำลังโหลดให้แสดง Loader
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const checkVerify = async ()=>{
+     const isValid= await   verifyToken(dispatch);
+   setCheckingAuth(false)
+    if (isValid) {
+      navigate(location.pathname, { replace: true }); // ✅ นำทางไปยังหน้าปัจจุบันแทนการกลับไป '/'
 
+    } } 
+    if (token) {
+      checkVerify(); // ✅ เรียกใช้งานเฉพาะเมื่อ isAuthenticated === true
+    } else {
+      setCheckingAuth(false); // ถ้าไม่ authenticated ไม่ต้องรอ token
+    }
+  }, [navigate,dispatch, location.pathname]);
+
+  if (loading || checkingAuth) return <Loader />;
+  if (!isAuthenticated) {
+    // ✅ ถ้าผู้ใช้ยังไม่ได้ล็อกอิน และอยู่ที่ /signin → แสดงหน้า SignIn
+    return location.pathname === '/signin' ? <SignIn /> : <Navigate to="/login" replace />;
+  }
+  
+  // ✅ ถ้าผู้ใช้ล็อกอินแล้ว แต่พยายามเข้าหน้า /signin → ให้ Redirect ไป Dashboard (/)
+  if (isAuthenticated && location.pathname === '/login') {
+    return <Navigate to="/" replace />;
+  }
   return (
+    
     <Routes>
       {routesData.map(
         ({ path, element, layout, title, protected: isProtected }) => {
@@ -60,23 +78,12 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
 
           return (
             <Route
-              key={path}
-              path={path}
-              element={
-                isProtected ? (
-                  isAuthenticated && verifyToken() ? (
-                    <ProtectRoute>{RouteElement}</ProtectRoute> // ถ้าต้องการการยืนยันตัวตน
-                  ) : (
-                    <SignIn /> // ถ้ายังไม่ได้ล็อกอินจะให้ไปหน้า SignIn
-                  )
-                ) : (
-                  RouteElement // หากไม่ต้องการการยืนยันตัวตน ก็แสดงหน้าตามปกติ
-                )
-              }
-            />
-          );
-        }
-      )}
+            key={path}
+            path={path}
+            element={isProtected ? <ProtectRoute>{RouteElement}</ProtectRoute> : RouteElement}
+          />
+        );
+      })}
     </Routes>
   );
 };
