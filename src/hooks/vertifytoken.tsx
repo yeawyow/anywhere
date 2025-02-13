@@ -10,6 +10,7 @@ export const verifyToken = async (dispatch: any) => {
       dispatch(setAuth(true)); // ✅ อัปเดต Redux state
       return true;
     }
+    localStorage.clear();
     return false;
     
   } catch (error) {
