@@ -42,7 +42,7 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
      setCheckingAuth(false)
     if (isValid) {
       navigate(window.location.pathname || "/", { replace: true }); // ✅ ถ้าไม่มี pathname ให้ไปที่ "/"
-     console.log("isvaid",isValid)
+      console.log("isvaid",isValid)
     } } 
     if (token) {
       checkVerify(); // ✅ เรียกใช้งานเฉพาะเมื่อ isAuthenticated === true
