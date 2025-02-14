@@ -1,5 +1,5 @@
 // export const API_URL = "http://localhost:3000";
 export const API_URL = "http://api.atec-inter.ac.th/server";
-export const APP_NAME = "ระบบการจัดการเรียนรู้ anywhere anytime";
-export const INSTITUION = "วิทยาลัยเทคโนโลยีเอ-เทค อินเตอร์ เอเชีย อากาศอำนวย ";
+export const APP_NAME = "ระบบการจัดการเรียนรู้ ANYWHERE ANYTIME";
+export const INSTITUION = "ATEC INTER ASIA  ";
 export const MAX_ITEMS_PER_PAGE = 10;

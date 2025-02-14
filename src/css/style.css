@@ -3,9 +3,10 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply font-satoshi font-normal text-base text-body bg-whiten relative z-1;
+  html,body {
+    @apply font-sarabun font-normal text-base text-body bg-whiten relative z-1;
   }
+  
 }
 
 @layer components {
