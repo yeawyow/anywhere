@@ -13,14 +13,14 @@ import { AppDispatch,RootState } from '../../app/store';
 const SignIn: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector(selectAuth);
-  const [user_national_id, setUser] = useState("");
+  const [username, setUser] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   // const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await dispatch(loginUser({ user_national_id, password }));
+    const result = await dispatch(loginUser({ username, password }));
     if (loginUser.fulfilled.match(result)) navigate("/");
   };
   // useEffect(() => {

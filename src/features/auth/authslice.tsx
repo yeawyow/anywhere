@@ -7,9 +7,16 @@ import { RootState } from "../../app/store";
 
 // ประเภทของข้อมูลผู้ใช้
 
+interface User {
+  pname: string;
+  fname: string;
+  lname: string;
+  tell: string;
+  email: string;
+}
 interface AuthState {
-  //token: string;
-  loading: boolean;
+  user: User, 
+    loading: boolean;
   error: string | null;
   isAuthenticated:boolean;
   
@@ -17,20 +24,27 @@ interface AuthState {
 
 // ค่าตั้งต้นของ State
 const initialState: AuthState = {
- // token: '',
+  user: {  // เปลี่ยนจากอาเรย์ ([{}]) เป็นอ็อบเจ็กต์
+    pname: "",
+    fname: "",
+    lname: "",
+    tell: "",
+    email: "",
+  },
   loading: false,
   error: null,
-  isAuthenticated:false
+  isAuthenticated: false
 };
 
+
 // // ฟังก์ชัน Login (ใช้ async thunk)
-export const loginUser = createAsyncThunk("auth/login", async (credentials: { user_national_id: string; password: string }, { rejectWithValue }) => {
+export const loginUser = createAsyncThunk("auth/login", async (credentials: { username: string; password: string }, { rejectWithValue }) => {
   try {
-    const data = await loginApi(credentials.user_national_id, credentials.password);
+    const data = await loginApi(credentials.username, credentials.password);
     
     console.log("tokennenee",data)
     
-    return data.token;
+    return { token: data, user: data.user }; // ส่งกลับเป็น object ที่มีทั้ง token และ user
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || "Login failed");
   }
@@ -39,7 +53,7 @@ export const loginUser = createAsyncThunk("auth/login", async (credentials: { us
 // export const loginUser = createAsyncThunk(
 //   'auth/login',
 //   async (
-//     credentials: { user_national_id: string; password: string },
+//     credentials: { username: string; password: string },
 //     { rejectWithValue },
 //   ) => {
 //     try {
@@ -64,6 +78,9 @@ const authSlice = createSlice({
   initialState,
   reducers: {setAuth: (state, action: PayloadAction<boolean>) => {
     state.isAuthenticated = action.payload;
+
+  },setUser:(state,action)=>{
+    state.user = action.payload; 
   }},
   extraReducers: (builder) => {
     builder
@@ -72,10 +89,12 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        const { user, token } = action.payload;
+        console.log("sliieie",user,token)
         state.loading = false;
-       // state.token = action.payload;
+        state.user = user; 
         state.isAuthenticated=true;
-        localStorage.setItem('token',action.payload);
+        localStorage.setItem('token',token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -88,6 +107,6 @@ const authSlice = createSlice({
 });
 
 // Export Selector
-export const { setAuth } = authSlice.actions;
+export const { setAuth,setUser } = authSlice.actions;
 export const selectAuth = (state: RootState) => state.auth;
 export default authSlice.reducer;
