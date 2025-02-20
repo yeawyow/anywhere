@@ -1,11 +1,12 @@
 import api from "./axiosInstance";
+import { API_LOGIN } from "../config/constants";
 
 
 
 
 
-export const loginApi = async (user_national_id: string, password: string)=> {
-  const response = await api.post("api/auth/login", { user_national_id, password }, { withCredentials: true });
+export const loginApi = async (username: string, password: string)=> {
+  const response = await api.post(`${API_LOGIN}`, { username, password }, { withCredentials: true });
 
   // Destructuring ต้องทำหลังจากที่ response.data ถูกส่งกลับ
   const { token, user } = response.data;
