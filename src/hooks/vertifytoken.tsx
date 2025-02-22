@@ -7,10 +7,10 @@ export const verifyToken = async (dispatch: any) => {
  
   try {
     const response = await api.post(`${VERIFY_TOKEN}`); // API ตรวจสอบ token
-    console.log("data5",response.data)
+    console.log("data5",response)
     if (response.data.valid) {
       dispatch(setAuth(true)); // ✅ อัปเดต Redux state
-      dispatch(setUser(response.data))
+      dispatch(setUser(response))
       return true;
     }
     localStorage.clear();
