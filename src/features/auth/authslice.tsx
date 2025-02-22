@@ -86,10 +86,10 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        // const { message } = action.payload;
+        const token = action.payload.message; // ✅ ดึงเฉพาะ message (token)
         state.loading = false;
         state.isAuthenticated=true;
-        localStorage.setItem('token',action.payload);
+        localStorage.setItem('token',token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
