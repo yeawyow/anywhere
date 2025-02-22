@@ -44,7 +44,7 @@ export const loginUser = createAsyncThunk("auth/login", async (credentials: { us
     
     console.log("tokennenee",data)
     
-    return { token: data, user: data.user }; // ส่งกลับเป็น object ที่มีทั้ง token และ user
+    return { data: data }; // ส่งกลับเป็น object ที่มีทั้ง token และ user
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || "Login failed");
   }
@@ -89,12 +89,12 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        const { user, token } = action.payload;
-        console.log("sliieie",user,token)
+        const { data } = action.payload;
+        console.log("sliieie",data)
         state.loading = false;
-        state.user = user; 
+        // state.user = " "; 
         state.isAuthenticated=true;
-        localStorage.setItem('token',token);
+        localStorage.setItem('token',data);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
