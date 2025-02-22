@@ -87,10 +87,10 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        const { message } = action.payload;
+        // const { message } = action.payload;
         state.loading = false;
         state.isAuthenticated=true;
-        localStorage.setItem('token',message);
+        localStorage.setItem('token',"message");
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
