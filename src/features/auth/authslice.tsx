@@ -40,11 +40,9 @@ const initialState: AuthState = {
 // // ฟังก์ชัน Login (ใช้ async thunk)
 export const loginUser = createAsyncThunk("auth/login", async (credentials: { username: string; password: string }, { rejectWithValue }) => {
   try {
-    const data = await loginApi(credentials.username, credentials.password);
-    
-    console.log("tokennenee",data)
-    
-    return { data: data }; // ส่งกลับเป็น object ที่มีทั้ง token และ user
+    const response = await loginApi(credentials.username, credentials.password);
+    const {message} = response
+    return  message; // ส่งกลับเป็น object ที่มีทั้ง token และ user
   } catch (error: any) {
     return rejectWithValue(error.response?.data?.message || "Login failed");
   }
@@ -89,12 +87,10 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        const { data } = action.payload;
-        console.log("sliieie",data)
+        const { message } = action.payload;
         state.loading = false;
-        // state.user = " "; 
         state.isAuthenticated=true;
-        localStorage.setItem('token',"dfef");
+        localStorage.setItem('token',message);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
