@@ -1,11 +1,12 @@
 import api from "../api/axiosInstance";
 import { setAuth,setUser } from "../features/auth/authslice";
+import { VERIFY_TOKEN } from "../config/constants";
 
 
 export const verifyToken = async (dispatch: any) => {
  
   try {
-    const response = await api.post("api/auth/verifyToken"); // API ตรวจสอบ token
+    const response = await api.post(`${VERIFY_TOKEN}`); // API ตรวจสอบ token
     console.log("data5",response.data)
     if (response.data.valid) {
       dispatch(setAuth(true)); // ✅ อัปเดต Redux state
