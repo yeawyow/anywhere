@@ -11,8 +11,8 @@ export const loginApi = async (username: string, password: string)=> {
   // Destructuring ต้องทำหลังจากที่ response.data ถูกส่งกลับ
   // const { token, user } = response;
 
-   console.log("res= ",response); // ตรวจสอบข้อมูลที่ดึงมา
+   console.log("res= ",response.data); // ตรวจสอบข้อมูลที่ดึงมา
 
-  return response; // ส่งกลับข้อมูลทั้งหมด
+  return response.data; // ส่งกลับข้อมูลทั้งหมด
 };
 
