@@ -33,7 +33,8 @@ const layoutMap: { [key: string]: React.ElementType } = {
 const AppRoutes = ({ loading }: { loading: boolean }) => {
   const navigate = useNavigate();
   const [checkingAuth, setCheckingAuth] = useState(true);
- const token=localStorage.getItem('token')
+ const token=sessionStorage.getItem('token')
+ console.log(token)
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const dispatch = useDispatch()
   useEffect(() => {

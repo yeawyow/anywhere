@@ -43,7 +43,7 @@ export const loginUser = createAsyncThunk("auth/login", async (credentials: { us
     const response = await loginApi(credentials.username, credentials.password);
     return  response; // ส่งกลับเป็น object ที่มีทั้ง token และ user
   } catch (error: any) {
-    return rejectWithValue(error.response?.data?.message || "Login failed");
+    return rejectWithValue(error.response || "Login failed");
   }
 });
 // Async thunk สำหรับ login
@@ -86,10 +86,18 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        const token = action.payload.message; // ✅ ดึงเฉพาะ message (token)
-        state.loading = false;
-        state.isAuthenticated=true;
-        localStorage.setItem('token',token);
+        console.log("Full Payload:", action.payload); // ✅ ตรวจสอบ payload ก่อน
+  const data = action.payload?.data; // ✅ ป้องกัน undefined
+  console.log("Extracted Data:", data);
+
+  if (data) {
+    state.loading = false;
+    state.isAuthenticated = true;
+    sessionStorage.setItem("token", data.message || "ไม่มี token");
+    
+  } else {
+    state.error = "ข้อมูลที่ได้รับไม่ถูกต้อง";
+  }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
