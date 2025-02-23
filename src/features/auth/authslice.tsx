@@ -96,7 +96,8 @@ const authSlice = createSlice({
     state.loading = false;
     state.isAuthenticated = true;
     sessionStorage.setItem("token", data.message || "ไม่มี token");
-    
+    const { user_info } = data.message;
+    state.user = user_info;
   } else {
     state.error = "ข้อมูลที่ได้รับไม่ถูกต้อง";
   }
