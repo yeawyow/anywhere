@@ -8,12 +8,9 @@ import { useMemo } from "react";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const user = useSelector((state: RootState) => state.auth);
+  const user = useSelector((state: RootState) => state.auth.user);
   console.log(user)
-  const userData = useMemo(() => ({
-    user: user.user,
-
-  }), [user]);
+ 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -23,7 +20,7 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-          {userData.user?.fname}      </span>
+             </span>
           <span className="block text-xs">UX Designer</span>
         </span>
 
