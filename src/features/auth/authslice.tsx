@@ -116,9 +116,9 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-      state.loading=false;
-      sessionStorage.clear()
-      localStorage.clear()
+      // state.loading=false;
+      // sessionStorage.clear()
+      // localStorage.clear()
       });
   },
 });
