@@ -16,7 +16,7 @@ interface User {
 }
 interface AuthState {
   user: User, 
-    loading: boolean;
+  loading: boolean;
   error: string | null;
   isAuthenticated:boolean;
   
@@ -77,6 +77,7 @@ const authSlice = createSlice({
     state.isAuthenticated = action.payload;
 
   },setUser:(state,action)=>{
+    console.log("9999",action.payload.data)
     state.user = action.payload; 
   }},
   extraReducers: (builder) => {
@@ -88,7 +89,7 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         console.log("Full Payload:", action.payload); // ✅ ตรวจสอบ payload ก่อน
   const data = action.payload?.data; // ✅ ป้องกัน undefined
-  console.log("Extracted Data:", data);
+  // console.log("Extracted Data:", data);
 
   if (data) {
     state.loading = false;
