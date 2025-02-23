@@ -2,10 +2,17 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
+import { RootState } from '../../app/store';
+import { useSelector } from "react-redux";
+import { useMemo } from "react";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const user = useSelector((state: RootState) => state.auth);
+  const userData = useMemo(() => ({
+    user: user.user,
 
+  }), [user]);
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -15,8 +22,7 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
-          </span>
+          {userData.user?.fname}      </span>
           <span className="block text-xs">UX Designer</span>
         </span>
 

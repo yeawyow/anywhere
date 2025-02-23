@@ -6,7 +6,7 @@ import { VERIFY_TOKEN } from "../config/constants";
 export const verifyToken = async (dispatch: any) => {
   try {
     const response = await api.post(`${VERIFY_TOKEN}`); // API ตรวจสอบ token
-    console.log("data5",response.data.valid)
+    // console.log("data5",response.data.valid)
     const {valid}=response.data.message
 
     if (valid) {
