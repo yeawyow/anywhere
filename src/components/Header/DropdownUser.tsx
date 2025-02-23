@@ -10,7 +10,9 @@ const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useSelector((state: RootState) => state.auth.user);
   console.log(user)
- 
+  const userData = useMemo(() => ({
+    fullName: `${user?.fname} ${user?.lname}`,
+  }), [user]);
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -20,6 +22,7 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
+            {userData.fullName}
              </span>
           <span className="block text-xs">UX Designer</span>
         </span>
