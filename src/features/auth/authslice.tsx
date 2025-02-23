@@ -105,8 +105,8 @@ const authSlice = createSlice({
     state.loading = false;
     state.isAuthenticated = true;
     sessionStorage.setItem("token", data.message || "ไม่มี token");
-    const { user_info } = data.message;
-    state.user = user_info;
+    // const { user_info } = data.message;
+    // state.user = user_info;
   }
       })
       .addCase(loginUser.rejected, (state, action) => {
