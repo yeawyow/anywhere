@@ -11,7 +11,7 @@ interface User {
   pname: string;
   fname: string;
   lname: string;
-  tell: string;
+  role: string;
   email: string;
 }
 interface AuthState {
@@ -28,7 +28,7 @@ const initialState: AuthState = {
     pname: "",
     fname: "",
     lname: "",
-    tell: "",
+    role: "",
     email: "",
   },
   loading: false,
@@ -84,7 +84,7 @@ const authSlice = createSlice({
         pname: user_info.pname || "",
         fname: user_info.first_name || "",
         lname: user_info.last_name || "",
-        tell: user_info.tell || "",
+        role: user_info.role || "",
         email: user_info.email || ""
       };
     } else {
