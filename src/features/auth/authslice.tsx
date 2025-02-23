@@ -107,8 +107,6 @@ const authSlice = createSlice({
     sessionStorage.setItem("token", data.message || "ไม่มี token");
     const { user_info } = data.message;
     state.user = user_info;
-  } else {
-    state.error = "ข้อมูลที่ได้รับไม่ถูกต้อง";
   }
       })
       .addCase(loginUser.rejected, (state, action) => {
