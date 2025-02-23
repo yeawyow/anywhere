@@ -65,7 +65,6 @@ export const loginUser = createAsyncThunk("auth/login", async (credentials: { us
 //   },
 // );
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
-  localStorage.removeItem("token"); // ลบ Token
   return null;
 });
 
@@ -117,7 +116,9 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
       .addCase(logoutUser.fulfilled, (state) => {
-       // state.token = '';
+      state.loading=false;
+      sessionStorage.clear()
+      localStorage.clear()
       });
   },
 });
