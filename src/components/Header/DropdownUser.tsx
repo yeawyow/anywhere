@@ -9,6 +9,7 @@ import { useMemo } from "react";
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const user = useSelector((state: RootState) => state.auth);
+  console.log(user)
   const userData = useMemo(() => ({
     user: user.user,
 
