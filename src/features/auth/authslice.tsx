@@ -79,7 +79,7 @@ const authSlice = createSlice({
   },setUser:(state,action)=>{
     const {user_info }=action.payload?.data.message
     console.log(user_info)
-    state.user = action.payload; 
+    state.user = user_info; 
   }},
   extraReducers: (builder) => {
     builder
