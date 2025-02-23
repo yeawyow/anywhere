@@ -76,11 +76,21 @@ const authSlice = createSlice({
   reducers: {setAuth: (state, action: PayloadAction<boolean>) => {
     state.isAuthenticated = action.payload;
 
-  },setUser:(state,action)=>{
-    const {user_info }=action.payload?.data.message
-    console.log(user_info)
-    state.user = user_info; 
-  }},
+  },setUser: (state, action) => {
+    const user_info = action.payload?.data?.message?.user_info;
+  
+    if (user_info) {
+      state.user = { 
+        pname: user_info.pname || "",
+        fname: user_info.first_name || "",
+        lname: user_info.last_name || "",
+        tell: user_info.tell || "",
+        email: user_info.email || ""
+      };
+    } else {
+      console.error("ไม่พบข้อมูล user_info ใน payload");
+    }
+  },},
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
