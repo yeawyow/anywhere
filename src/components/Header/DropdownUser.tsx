@@ -15,10 +15,10 @@ const DropdownUser = () => {
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch<AppDispatch>();
   console.log(user.role)
-  const userData = useMemo(() => ({
-    fullName: `${user?.fname} ${user?.lname}`,
-    role:`${user?.role}`
-  }), [user]);
+  // const userData = useMemo(() => ({
+  //   fullName: `${user?.fname} ${user?.lname}`,
+  //   role:`${user?.role}`
+  // }), [user]);
   
   const handleLogout = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,9 +36,9 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {userData.fullName}
+            {/* {userData.fullName} */}
              </span>
-          <span className="block text-xs">{userData.role}</span>
+          {/* <span className="block text-xs">{userData.role}</span> */}
         </span>
 
         <span className="h-12 w-12 rounded-full">
