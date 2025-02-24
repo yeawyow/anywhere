@@ -59,12 +59,11 @@ const authSlice = createSlice({
     setUser: (
       state,
       action: PayloadAction<{
-        valid: boolean;
-        user_info: AuthState['userInfo'];
+        message: { valid: boolean; user_info: AuthState['userInfo'] };
       }>,
     ) => {
-      state.isAuthenticated = action.payload.valid;
-      state.userInfo = action.payload.user_info;
+      state.isAuthenticated = action.payload.message.valid;
+      state.userInfo = action.payload.message.user_info;
     },
   },
   extraReducers: (builder) => {
