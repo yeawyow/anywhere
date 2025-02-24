@@ -52,7 +52,7 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
     } else {
       setCheckingAuth(false); // ถ้าไม่ authenticated ไม่ต้องรอ token
     }
-  }, [navigate, dispatch, window.location.pathname]);
+  }, [navigate, verifyToken, dispatch, window.location.pathname]);
 
   if (loading || checkingAuth) return <Loader />;
   if (!isAuthenticated) {
