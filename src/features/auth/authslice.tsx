@@ -7,11 +7,6 @@ import { loginApi } from '../../api/auth';
 // ประเภทของข้อมูลผู้ใช้
 
 interface AuthState {
-  userInfo: {
-    first_name: string;
-    last_name: string;
-    role: string[];
-  } | null;
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
@@ -19,7 +14,6 @@ interface AuthState {
 
 // ค่าตั้งต้นของ State
 const initialState: AuthState = {
-  userInfo: null,
   loading: false,
   error: null,
   isAuthenticated: false,
@@ -59,11 +53,10 @@ const authSlice = createSlice({
     setUser: (
       state,
       action: PayloadAction<{
-        message: { valid: boolean; user_info: AuthState['userInfo'] };
+        message: { valid: boolean };
       }>,
     ) => {
       state.isAuthenticated = action.payload.message.valid;
-      state.userInfo = action.payload.message.user_info;
     },
   },
   extraReducers: (builder) => {
