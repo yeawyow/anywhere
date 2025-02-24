@@ -6,14 +6,12 @@ import { loginApi } from '../../api/auth';
 
 // ประเภทของข้อมูลผู้ใช้
 
-interface User {
-  pname: string;
-  fname: string;
-  lname: string;
-  role: string;
-}
 interface AuthState {
-  user: User;
+  userInfo: {
+    first_name: string;
+    last_name: string;
+    role: string[];
+  } | null;
   loading: boolean;
   error: string | null;
   isAuthenticated: boolean;
@@ -21,13 +19,7 @@ interface AuthState {
 
 // ค่าตั้งต้นของ State
 const initialState: AuthState = {
-  user: {
-    // เปลี่ยนจากอาเรย์ ([{}]) เป็นอ็อบเจ็กต์
-    pname: '',
-    fname: '',
-    lname: '',
-    role: '',
-  },
+  userInfo: null,
   loading: false,
   error: null,
   isAuthenticated: false,
@@ -64,7 +56,16 @@ const authSlice = createSlice({
     setAuth: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
     },
-    setUser: (state, action) => {},
+    setUser: (
+      state,
+      action: PayloadAction<{
+        valid: boolean;
+        user_info: AuthState['userInfo'];
+      }>,
+    ) => {
+      state.isAuthenticated = action.payload.valid;
+      state.userInfo = action.payload.user_info;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -78,14 +79,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = true;
         sessionStorage.setItem('token', action.payload.message);
-        // const user_info = action.payload?.data?.message?.user_info;
-
-        // state.user = {
-        //   pname: user_info.pname || '',
-        //   fname: user_info.first_name || '',
-        //   lname: user_info.last_name || '',
-        //   role: user_info.role || '',
-        // };
       })
 
       .addCase(loginUser.rejected, (state, action) => {
