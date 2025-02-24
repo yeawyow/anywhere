@@ -9,18 +9,22 @@ import { APP_NAME, INSTITUION } from '../../config/constants';
 import { CiUser,CiLock } from "react-icons/ci";
 import { loginUser, selectAuth } from "../../features/auth/authslice";
 import bg from '../../images/bg/bg.jpg';
-import { AppDispatch,RootState } from '../../app/store';
+import { AppDispatch } from '../../app/store';
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 const SignIn: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector(selectAuth);
-  const [username, setUser] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   // const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const result = await dispatch(loginUser({ username, password }));
+  const loginSchema = z.object({
+    username: z.string().min(3, "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร"),
+    password: z.string().min(6, "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร"),
+  });
+  const handleLogin = async (data: { username: string; password: string }) => {
+    const result = await dispatch(loginUser({ username: data.username, password: data.password }));
     if (loginUser.fulfilled.match(result)) navigate("/");
   };
   // useEffect(() => {
@@ -31,6 +35,13 @@ const SignIn: React.FC = () => {
   // }, [isAuthenticated, navigate]);
   
   
+  const {
+    register,
+    handleSubmit,
+   
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+  });
   const fullScreenBackgroundStyle : React.CSSProperties = {
     boxSizing: 'border-box',
     display: 'block',
@@ -71,15 +82,16 @@ const SignIn: React.FC = () => {
              <h6 className="text-grayFS-600 text-center mt-2 sm:mt-4">เรียนรู้คอร์สเรียนกับ<span className="text-primaryFS-500">{INSTITUION}</span></h6>
               <div className='mt-12 w-full'>
             <div className='w-full sm:w-[400px]'  >
-              <form onSubmit={handleLogin}>
+              <form onSubmit={handleSubmit(handleLogin)} >
                 <div className="mb-4">
                   {/* <label className="mb-2.5 block font-medium text-black dark:text-white">
                     username
                   </label> */}
                   <div className="relative">
                     <input
-                    onChange={(e) => setUser(e.target.value)}
                       type="text"
+                      {...register("username")} 
+
                       placeholder="ชื่อผู้ใช้งาน"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-pink-600 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
@@ -97,7 +109,7 @@ const SignIn: React.FC = () => {
                   </label> */}
                   <div className="relative">
                     <input
-                    onChange={(e) => setPassword(e.target.value)}
+                   {...register("password")}
                     type="password"
                       placeholder="รหัสผ่าน"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-pink-600 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"

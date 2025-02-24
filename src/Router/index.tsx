@@ -10,9 +10,6 @@ interface ProtectRouteProps {
 const ProtectRoute: React.FC<ProtectRouteProps> = ({ children }) => {
   //const dispatch = useDispatch();
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-  
-
- console.log('protecrout')
  console.log('isAuthenticated=',isAuthenticated)
   
 
