@@ -1,20 +1,21 @@
 import api from '../api/axiosInstance';
-import { setAuth, setUser } from '../features/auth/authslice';
+import { setAuth } from '../features/auth/authslice';
 import { VERIFY_TOKEN } from '../config/constants';
 
 export const verifyToken = async (dispatch: any, token: any) => {
   if (!token) {
     console.log('No token found, skipping verification.');
+
     return false;
   }
   try {
     const response = await api.post(`${VERIFY_TOKEN}`); // API ตรวจสอบ token
     // console.log("data5",response.data.valid)
-    const { valid } = response.data.message;
-    console.log(valid);
+    const { valid, user_info } = response.data.message;
+    console.log(response.data);
     if (valid) {
-      dispatch(setAuth(true)); // ✅ อัปเดต Redux state
-      dispatch(setUser(response.data));
+      dispatch(setAuth({ valid: true, user: user_info })); // ✅ อัปเดต Redux state
+      // dispatch(setUser(response.data));
       return true;
     }
     localStorage.clear();

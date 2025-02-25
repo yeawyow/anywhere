@@ -9,9 +9,9 @@ interface ProtectRouteProps {
 
 const ProtectRoute: React.FC<ProtectRouteProps> = ({ children }) => {
   //const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
- console.log('isAuthenticated=',isAuthenticated)
-  
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated,
+  );
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />; // ถ้าไม่ได้ล็อกอิน จะรีไดเรกไปที่หน้า login

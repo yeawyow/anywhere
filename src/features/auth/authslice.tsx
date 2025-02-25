@@ -1,22 +1,25 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { loginApi } from '../../api/auth';
-// import axios from 'axios';
-// import { API_URL } from "../../config/constants";
 
-// ประเภทของข้อมูลผู้ใช้
+interface UserInfo {
+  first_name: string;
+  last_name: string;
+  role: string[];
+}
 
 interface AuthState {
   loading: boolean;
-  error: string | null;
+  error: boolean;
   isAuthenticated: boolean;
+  user_info: UserInfo | null;
 }
 
-// ค่าตั้งต้นของ State
 const initialState: AuthState = {
   loading: false,
-  error: null,
+  error: false,
   isAuthenticated: false,
+  user_info: null,
 };
 
 // // ฟังก์ชัน Login (ใช้ async thunk)
@@ -33,7 +36,7 @@ export const loginUser = createAsyncThunk(
       );
       return response.data; // ส่งกลับเป็น object ที่มีทั้ง token และ user
     } catch (error: any) {
-      return rejectWithValue(error.response || 'Login failed');
+      return rejectWithValue(error.response.data);
     }
   },
 );
@@ -47,38 +50,38 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setAuth: (state, action: PayloadAction<boolean>) => {
-      state.isAuthenticated = action.payload;
-    },
-    setUser: (
+    setAuth: (
       state,
-      action: PayloadAction<{
-        message: { valid: boolean };
-      }>,
+      action: PayloadAction<{ valid: boolean; user: UserInfo }>,
     ) => {
-      state.isAuthenticated = action.payload.message.valid;
+      state.isAuthenticated = action.payload.valid;
+      state.user_info = action.payload.user; // ✅ อัปเดตข้อมูล user
+      console.log('verify', action.payload);
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        // console.log('Full Payload:', action.payload); // ✅ ตรวจสอบ payload ก่อน
-
+        const { valid, user_info } = action.payload.message;
         state.loading = false;
-        state.isAuthenticated = true;
+        state.isAuthenticated = valid;
+        state.user_info = user_info;
+        state.error = false;
         sessionStorage.setItem('token', action.payload.message);
       })
 
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.isAuthenticated = false;
+        state.error = true;
       })
+
       .addCase(logoutUser.fulfilled, (state) => {
-        // state.loading=false;
+        state.loading = false;
         // sessionStorage.clear()
         // localStorage.clear()
       });
@@ -86,6 +89,6 @@ const authSlice = createSlice({
 });
 
 // Export Selector
-export const { setAuth, setUser } = authSlice.actions;
+export const { setAuth } = authSlice.actions;
 export const selectAuth = (state: RootState) => state.auth;
 export default authSlice.reducer;

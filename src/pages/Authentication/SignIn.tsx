@@ -1,18 +1,17 @@
-import {useState} from 'react';
 //import { Link } from 'react-router-dom';
 // import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 //import LogoDark from '../../images/logo/logo-dark.svg';
 //import Logo from '../../images/logo/logo.svg';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { APP_NAME, INSTITUION } from '../../config/constants';
-import { CiUser,CiLock } from "react-icons/ci";
-import { loginUser, selectAuth } from "../../features/auth/authslice";
+import { CiUser, CiLock } from 'react-icons/ci';
+import { loginUser, selectAuth } from '../../features/auth/authslice';
 import bg from '../../images/bg/bg.jpg';
 import { AppDispatch } from '../../app/store';
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 const SignIn: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector(selectAuth);
@@ -20,36 +19,33 @@ const SignIn: React.FC = () => {
   // const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const loginSchema = z.object({
-    username: z.string().min(3, "ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร"),
-    password: z.string().min(6, "รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร"),
+    username: z.string().min(3, 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร'),
+    password: z.string().min(5, 'รหัสผ่านต้องมีอย่างน้อย 5 ตัวอักษร'),
   });
   const handleLogin = async (data: { username: string; password: string }) => {
-    const result = await dispatch(loginUser({ username: data.username, password: data.password }));
-    if (loginUser.fulfilled.match(result)) navigate("/");
+    const result = await dispatch(
+      loginUser({ username: data.username, password: data.password }),
+    );
+    if (loginUser.fulfilled.match(result)) navigate('/');
   };
   // useEffect(() => {
   //   if (isAuthenticated) {
-      
+
   //     navigate("/"); // เปลี่ยนเส้นทางไปที่หน้าหลัก
   //   }
   // }, [isAuthenticated, navigate]);
-  
-  
-  const {
-    register,
-    handleSubmit,
-   
-  } = useForm({
+
+  const { register, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema),
   });
-  const fullScreenBackgroundStyle : React.CSSProperties = {
+  const fullScreenBackgroundStyle: React.CSSProperties = {
     boxSizing: 'border-box',
     display: 'block',
     overflow: 'hidden',
-    width: '100vw',  // ใช้ความกว้างของหน้าจอทั้งหมด
+    width: '100vw', // ใช้ความกว้างของหน้าจอทั้งหมด
     height: '100vh', // ใช้ความสูงของหน้าจอทั้งหมด
     background: `url(${bg}) no-repeat center center`,
-    backgroundSize: 'cover',  // ทำให้พื้นหลังครอบคลุมพื้นที่ทั้งหมด
+    backgroundSize: 'cover', // ทำให้พื้นหลังครอบคลุมพื้นที่ทั้งหมด
     opacity: 1,
     border: 0,
     margin: 0,
@@ -60,73 +56,80 @@ const SignIn: React.FC = () => {
     bottom: 0,
     right: 0,
   };
-  
-  
-  return (
-    
-    <>
-     
 
-      <div className="bg-cover  fullScreenBackgroundStyle  min-h-screen"
-      style={fullScreenBackgroundStyle}>
-        
-          <div className="max-w-lg py-5 2xl:py-5 mx-auto">
-            
-            <div className='flex justify-center mb-2 sm:mb-8 relative w-[200px] h-[35px] sm:w-[325px] sm:h-[55px] mx-auto'>
+  return (
+    <>
+      <div
+        className="bg-cover  fullScreenBackgroundStyle  min-h-screen"
+        style={fullScreenBackgroundStyle}
+      >
+        <div className="max-w-lg py-5 2xl:py-5 mx-auto">
+          <div className="flex justify-center mb-2 sm:mb-8 relative w-[200px] h-[35px] sm:w-[325px] sm:h-[55px] mx-auto">
             {/* <span style={styles}>สวัสดี</span> */}
-             
-            </div>
-             
-             <div className="flex flex-col items-center w-full h-full rounded-2xl border-transparent px-4 py-8 sm:p-12 bg-white   bg-transparent shadow-none ">
-             <h3 className="text-grayFS-800 text-center text-lg sm:text-xl lg:text-3xl">เข้าสู่บัญชี {APP_NAME}</h3>
-             <h6 className="text-grayFS-600 text-center mt-2 sm:mt-4">เรียนรู้คอร์สเรียนกับ<span className="text-primaryFS-500">{INSTITUION}</span></h6>
-              <div className='mt-12 w-full'>
-            <div className='w-full sm:w-[400px]'  >
-              <form onSubmit={handleSubmit(handleLogin)} >
-                <div className="mb-4">
-                  {/* <label className="mb-2.5 block font-medium text-black dark:text-white">
+          </div>
+
+          <div className="flex flex-col items-center w-full h-full rounded-2xl border-transparent px-4 py-8 sm:p-12 bg-white   bg-transparent shadow-none ">
+            <h3 className="text-grayFS-800 text-center text-lg sm:text-xl lg:text-3xl">
+              เข้าสู่บัญชี {APP_NAME}
+            </h3>
+            <h6 className="text-grayFS-600 text-center mt-2 sm:mt-4">
+              เรียนรู้คอร์สเรียนกับ
+              <span className="text-primaryFS-500">{INSTITUION}</span>
+            </h6>
+            <div className="mt-12 w-full">
+              <div className="w-full sm:w-[400px]">
+                <form onSubmit={handleSubmit(handleLogin)}>
+                  <div className="mb-4">
+                    {/* <label className="mb-2.5 block font-medium text-black dark:text-white">
                     username
                   </label> */}
-                  <div className="relative">
-                    <input
-                      type="text"
-                      {...register("username")} 
+                    <div className="relative">
+                      <input
+                        type="text"
+                        {...register('username')}
+                        placeholder="ชื่อผู้ใช้งาน"
+                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-pink-600 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      />
 
-                      placeholder="ชื่อผู้ใช้งาน"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-pink-600 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
-
-                    <span className="absolute right-4 top-4">
-                    <CiUser size={30} />
-
-                    </span>
+                      <span className="absolute right-4 top-4">
+                        <CiUser size={30} />
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="mb-6">
-                  {/* <label className=" font-sarabun mb-2.5 block font-medium text-black dark:text-white">
+                  <div className="mb-6">
+                    {/* <label className=" font-sarabun mb-2.5 block font-medium text-black dark:text-white">
                      Password
                   </label> */}
-                  <div className="relative">
-                    <input
-                   {...register("password")}
-                    type="password"
-                      placeholder="รหัสผ่าน"
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-pink-600 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
+                    <div className="relative">
+                      <input
+                        {...register('password')}
+                        type="password"
+                        placeholder="รหัสผ่าน"
+                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-pink-600 focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      />
 
-                    <span className="absolute right-4 top-4">
-                    <CiLock size={30} />
-                    </span>
+                      <span className="absolute right-4 top-4">
+                        <CiLock size={30} />
+                      </span>
+                    </div>
                   </div>
-                </div>
-<div className="mt-8 flex justify-end"><h6 className="text-pink-500 cursor-pointer mb-5" >ลืมรหัสผ่าน ?</h6></div>
-                <div className="mb-5">
-                        <button className="w-full rounded-lg  bg-pink-600 p-4 text-white transition hover:bg-opacity-90"  type="submit" disabled={loading}>{loading ? "Logging in..." : "Login"}</button>
+                  <div className="mt-8 flex justify-end">
+                    <h6 className="text-pink-500 cursor-pointer mb-5">
+                      ลืมรหัสผ่าน ?
+                    </h6>
+                  </div>
+                  <div className="mb-5">
+                    <button
+                      className="w-full rounded-lg  bg-pink-600 p-4 text-white transition hover:bg-opacity-90"
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {loading ? 'Logging in...' : 'Login'}
+                    </button>
+                  </div>
 
-                </div>
-
-                {/* <button disabled className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+                  {/* <button disabled className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
                   <span>
                     <svg
                       width="20"
@@ -163,19 +166,17 @@ const SignIn: React.FC = () => {
                   Sign in with Google
                 </button> */}
 
-                <div className="mt-6 text-center">
-                 
-                  {error && <p style={{ color: "red" }}>{error}</p>}
-                
-                </div>
-              </form>
-              </div>
-              </div>
+                  <div className="mt-6 text-center">
+                    {error ? (
+                      <p style={{ color: 'red' }}>ข้อมูลไม่ถูกต้อง</p>
+                    ) : null}
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-        
-      
+        </div>
+      </div>
     </>
   );
 };

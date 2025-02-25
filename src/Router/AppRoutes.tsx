@@ -16,6 +16,7 @@ import Profile from '../pages/Profile';
 import PageTitle from '../components/PageTitle';
 import PageAceess from '../pages/PageAceess';
 import { verifyToken } from '../hooks/vertifytoken';
+import { isValid } from 'zod';
 
 const componentsMap: { [key: string]: React.ElementType } = {
   SignIn,
@@ -32,11 +33,12 @@ const layoutMap: { [key: string]: React.ElementType } = {
 const AppRoutes = ({ loading }: { loading: boolean }) => {
   const navigate = useNavigate();
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const token = sessionStorage.getItem('token') || false;
-  console.log(token);
+  const token = sessionStorage.getItem('token');
+
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated,
   );
+  console.log(isAuthenticated);
   const dispatch = useDispatch();
   useEffect(() => {
     const checkVerify = async () => {
@@ -44,15 +46,15 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
       setCheckingAuth(false);
       if (isValid) {
         navigate(window.location.pathname || '/', { replace: true }); // ✅ ถ้าไม่มี pathname ให้ไปที่ "/"
-        // console.log("isvaid",isValid)
+        console.log('isvaid', isValid);
       }
     };
-    if (token) {
-      checkVerify(); // ✅ เรียกใช้งานเฉพาะเมื่อ isAuthenticated === true
-    } else {
+    if (token === null) {
       setCheckingAuth(false); // ถ้าไม่ authenticated ไม่ต้องรอ token
+    } else {
+      checkVerify();
     }
-  }, [navigate, verifyToken, dispatch, window.location.pathname]);
+  }, [navigate, isValid, dispatch, window.location.pathname]);
 
   if (loading || checkingAuth) return <Loader />;
   if (!isAuthenticated) {
