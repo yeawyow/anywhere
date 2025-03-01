@@ -1,6 +1,11 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  isRejectedWithValue,
+} from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { loginApi } from '../../api/auth';
+import { loginApi, logoutApi } from '../../api/auth';
 
 interface UserInfo {
   first_name: string;
@@ -42,7 +47,14 @@ export const loginUser = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
-  return null;
+  console.log('444');
+  try {
+    console.log('ttt');
+    const response = await logoutApi();
+    return response.data;
+  } catch (error: any) {
+    return isRejectedWithValue(error.response.data);
+  }
 });
 
 // สร้าง Slice สำหรับ Auth
@@ -80,10 +92,20 @@ const authSlice = createSlice({
         state.error = true;
       })
 
+      // ✅ Logout
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
-        // sessionStorage.clear()
-        // localStorage.clear()
+        state.isAuthenticated = false;
+        state.user_info = null;
+        sessionStorage.clear();
+        localStorage.clear();
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
       });
   },
 });

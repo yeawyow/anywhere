@@ -3,10 +3,16 @@ import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
 import { IoExitOutline } from 'react-icons/io5';
+import { AppDispatch } from '../../app/store';
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '../../features/auth/authslice';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
+  const dispatch = useDispatch<AppDispatch>();
+  const HandleLogout = () => {
+    dispatch(logoutUser());
+  };
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -120,7 +126,10 @@ const DropdownUser = () => {
               </Link>
             </li>
           </ul>
-          <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+          <button
+            onClick={HandleLogout}
+            className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+          >
             <IoExitOutline />
             ออกจากระบบ
           </button>

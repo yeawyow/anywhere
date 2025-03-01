@@ -1,5 +1,5 @@
 import api from './axiosInstance';
-import { API_LOGIN } from '../config/constants';
+import { API_LOGIN, API_LOGOUT } from '../config/constants';
 
 export const loginApi = async (username: string, password: string) => {
   const response = await api.post(
@@ -13,4 +13,10 @@ export const loginApi = async (username: string, password: string) => {
 
   console.log(response);
   return response; // ส่งกลับข้อมูลทั้งหมด
+};
+
+export const logoutApi = async () => {
+  const token = sessionStorage.getItem('token');
+  const response = await api.post(`${API_LOGOUT}`, { token });
+  return response;
 };

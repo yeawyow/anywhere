@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { RootState } from '../app/store';
 
 interface ProtectRouteProps {
@@ -8,7 +8,6 @@ interface ProtectRouteProps {
 }
 
 const ProtectRoute: React.FC<ProtectRouteProps> = ({ children }) => {
-  //const dispatch = useDispatch();
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated,
   );
