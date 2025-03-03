@@ -1,36 +1,48 @@
 [
-    {
-      "path": "/login",
-      "element": "SignIn",
-      "layout": "BlankLayout",
-      "protected": false
-    },
-    {
-      "path": "/",
-      "element": "Dashboard",
-      "layout": "DefaultLayout",
-      "title": "Dashboard",
-      "protected": true
-    },
-    {
-      "path": "/profile",
-      "element": "Profile",
-      "layout": "DefaultLayout",
-      "title": "Profile",
-      "protected": true
-    },
-    {
-      "path": "/userManagement",
-      "element": "userManagement",
-      "layout": "DefaultLayout",
-      "title": "User Management (จัดการผู้ใช้งาน)",
-      "protected": true
-    },
-    
-    {
-      "path": "*",
-      "element": "PageAceess",
-      "protected": false
-    }
-  ]
-  
+  {
+    "path": "/login",
+    "element": "SignIn",
+    "layout": "BlankLayout",
+    "protected": false
+  },
+  {
+    "path": "/",
+    "element": "Dashboard",
+    "layout": "DefaultLayout",
+    "title": "Dashboard",
+    "protected": true
+  },
+  {
+    "path": "/profile",
+    "element": "Profile",
+    "layout": "DefaultLayout",
+    "title": "Profile",
+    "protected": true
+  },
+  {
+    "path": "/register",
+    "element": "RegisterPage",
+    "layout": "DefaultLayout",
+    "title": "Profile",
+    "protected": true
+  },
+  {
+    "path": "/userMan",
+    "element": "UserManage",
+    "layout": "DefaultLayout",
+    "title": "User Management (จัดการผู้ใช้งาน)",
+    "protected": true
+  },
+  {
+    "path": "/apsettings",
+    "element": "AppSettings",
+    "layout": "DefaultLayout",
+    "title": "ตั้งค่าโปรแกรม",
+    "protected": true
+  },
+  {
+    "path": "*",
+    "element": "PageAceess",
+    "protected": false
+  }
+]

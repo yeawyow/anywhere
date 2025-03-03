@@ -11,17 +11,26 @@ import { RootState } from '../app/store';
 // 🔹 Import JSON Routes
 import routesData from './routes.json';
 import SignIn from '../pages/Authentication/SignIn';
+import Settings from '../pages/Settings';
 import Dashboard from '../pages/Dashboard/Dashboard';
 import Profile from '../pages/Profile';
 import PageTitle from '../components/PageTitle';
 import PageAceess from '../pages/PageAceess';
+import AppSettings from '../pages/AppSettings';
+
 import { verifyToken } from '../hooks/vertifytoken';
 import { isValid } from 'zod';
+import RegisterPage from '../pages/RegisterPage';
+import UserManage from '../pages/UserManage';
 
 const componentsMap: { [key: string]: React.ElementType } = {
   SignIn,
   Dashboard,
+  RegisterPage,
+  UserManage,
   Profile,
+  Settings,
+  AppSettings,
   PageAceess,
 };
 
