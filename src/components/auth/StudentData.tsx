@@ -48,7 +48,7 @@ export default function StudentData() {
     <>
       <div className="mb-3">
         <button className="ml-3 success" onClick={openModal}>
-          เพิ่มข้อมูล
+          เพิ่มข้อมูลนักศึกษา
         </button>
       </div>
       {/* Modal ที่แสดงฟอร์มข้อมูล */}
