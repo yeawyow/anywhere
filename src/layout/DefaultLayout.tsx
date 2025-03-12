@@ -1,22 +1,40 @@
 import React, { useState, ReactNode } from 'react';
 import Header from '../components/Header/index';
-import Sidebar from '../components/Sidebar/index';
+import { Link } from 'react-router-dom';
+
+import Sidebar, { SidebarItem } from '../components/Sidebar/Sidebar'; // นำเข้า Sidebar และ SidebarItem
+import { HiHome, HiUser, HiCog } from 'react-icons/hi'; // หรือไอคอนที่คุณใช้งาน
 
 const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <div className="dark:bg-boxdark-2 dark:text-bodydark">
       {/* <!-- ===== Page Wrapper Start ===== --> */}
       <div className="flex h-screen overflow-hidden">
         {/* <!-- ===== Sidebar Start ===== --> */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <Sidebar>
+          <SidebarItem
+            icon={<HiHome size={20} />}
+            text="Dashboard"
+            to="/"
+            active
+          />
+          <SidebarItem
+            icon={<HiUser size={20} />}
+            text="StudentRegist"
+            to="/StudentRegist"
+          />
+          <SidebarItem
+            icon={<HiCog size={20} />}
+            text="Settings"
+            to="/settings"
+          />
+        </Sidebar>
         {/* <!-- ===== Sidebar End ===== --> */}
 
         {/* <!-- ===== Content Area Start ===== --> */}
         <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
           {/* <!-- ===== Header Start ===== --> */}
-          <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <Header />
           {/* <!-- ===== Header End ===== --> */}
 
           {/* <!-- ===== Main Content Start ===== --> */}

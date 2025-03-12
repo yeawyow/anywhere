@@ -20,10 +20,10 @@
     "protected": true
   },
   {
-    "path": "/register",
-    "element": "RegisterPage",
+    "path": "/StudentRegist",
+    "element": "StudentRegist",
     "layout": "DefaultLayout",
-    "title": "Profile",
+    "title": "StudentRegist",
     "protected": true
   },
   {

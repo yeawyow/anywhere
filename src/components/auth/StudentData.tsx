@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from '../ui/modal';
+import { Modal } from '../ui/modal/Modal';
 import { useModal } from '../../hooks/useModal';
 import RegStudentForm from '../Forms/RegStudentForm ';
 export default function StudentData() {

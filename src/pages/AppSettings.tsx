@@ -1,5 +1,4 @@
 import React from 'react';
-import UserMetaCard from '../components/settingApp/UserMetaCard';
 export default function AppSettings() {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
@@ -7,7 +6,7 @@ export default function AppSettings() {
         ตั้งค่า
       </h3>
       <div className="space-y-6">
-        <UserMetaCard />
+        {/* <UserMetaCard /> */}
         {/* <UserInfoCard /> */}
         {/* <UserAddressCard /> */}
       </div>
