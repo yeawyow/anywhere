@@ -14,8 +14,8 @@ const DropdownUser = () => {
     dispatch(logoutUser());
   };
   const { user_info } = useSelector((state: RootState) => state.auth || {});
-  const first_name = user_info?.first_name || 'ไม่ทราบชื่อ';
-  const last_name = user_info?.last_name || '';
+  const first_name = user_info?.first_name_thai || 'ไม่ทราบชื่อ';
+  const last_name = user_info?.last_name_thai || '';
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link

@@ -8,8 +8,8 @@ import { RootState } from '../../app/store';
 import { loginApi, logoutApi } from '../../api/auth';
 
 interface UserInfo {
-  first_name: string;
-  last_name: string;
+  first_name_thai: string;
+  last_name_thai: string;
   role: string[];
 }
 
