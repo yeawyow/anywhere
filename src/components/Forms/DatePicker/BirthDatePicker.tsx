@@ -32,7 +32,7 @@ const days = Array.from({ length: 31 }, (_, i) => ({
 }));
 
 interface BirthDatePickerProps {
-  onAgeChange: (age: number) => void; // ฟังก์ชันที่รับค่าอายุจากการคำนวณ
+  onAgeChange: (age: number, birthdate: string) => void; // ฟังก์ชันที่รับค่าอายุและวันเกิด
 }
 
 const BirthDatePicker: React.FC<BirthDatePickerProps> = ({ onAgeChange }) => {
@@ -45,7 +45,8 @@ const BirthDatePicker: React.FC<BirthDatePickerProps> = ({ onAgeChange }) => {
     const day = selectedDay.name.padStart(2, '0'); // เติม 0 หน้าเลข 1 หลัก
     const month = selectedMonth.id.toString().padStart(2, '0'); // เติม 0 หน้าเดือนที่เป็นเลข 1 หลัก
     const year = selectedYear.id.toString(); // ปี พ.ศ.
-    return `${day}-${month}-${year}`;
+    const birthdate = `${day}-${month}-${year}`;
+    return birthdate;
   };
 
   // ฟังก์ชันคำนวณอายุ
@@ -65,7 +66,8 @@ const BirthDatePicker: React.FC<BirthDatePickerProps> = ({ onAgeChange }) => {
       age--; // ลดอายุลง 1 ปีหากยังไม่ถึงวันเกิดในปีนี้
     }
 
-    onAgeChange(age); // ส่งค่าที่คำนวณได้ไปยัง parent component
+    const formattedBirthdate = getFormattedDate(); // รับค่า birthdate ที่คำนวณได้
+    onAgeChange(age, formattedBirthdate); // ส่งค่าอายุและวันเกิดไปยัง parent component
     return age;
   };
 
@@ -98,9 +100,9 @@ const BirthDatePicker: React.FC<BirthDatePickerProps> = ({ onAgeChange }) => {
           onChange={setSelectedYear}
         />
       </div>
-      <div className="mt-2">
+      {/* <div className="mt-2">
         <p>วันที่เลือก: {getFormattedDate()}</p>
-      </div>
+      </div> */}
     </div>
   );
 };

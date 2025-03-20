@@ -47,9 +47,7 @@ export const loginUser = createAsyncThunk(
 );
 
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
-  console.log('444');
   try {
-    console.log('ttt');
     const response = await logoutApi();
     return response.data;
   } catch (error: any) {

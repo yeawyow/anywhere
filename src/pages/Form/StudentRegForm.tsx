@@ -1,12 +1,12 @@
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { useEffect, useState } from 'react';
 import { getPrefix } from '../../api/sregist';
 import BirthDatePicker from '../../components/Forms/DatePicker/BirthDatePicker';
 import Select from '../../components/Forms/Select';
 import { getethnicity, getNational } from '../../api/mokApi';
+import ThaiAddressSelect from '../../components/Forms/SelectGroup/ThaiAddressSelect';
 interface Prefix {
   id: number;
   prefix_name: string;
@@ -21,6 +21,10 @@ interface Ethnicity {
   id: number;
   ethnicity_name_thai: string;
   [key: string]: string | number; // เพิ่ม index signature
+}
+interface Student {
+  date_of_birth: string;
+  phone_number: string;
 }
 const schema = z.object({
   prefix_id: z
@@ -60,14 +64,32 @@ const schema = z.object({
     .length(13, { message: 'เลขบัตรประชาชนต้องมีความยาว 13 หลัก' })
     .regex(/^\d{13}$/, { message: 'เลขบัตรประชาชนต้องเป็นตัวเลขเท่านั้น' }),
   nationality_id: z.number().optional(), // ทำให้ไม่บังคับกรอก
-  date_of_birth: z.date().refine((date) => !isNaN(date.getTime()), {
-    message: 'กรุณาเลือกวันเดือนปีเกิด',
-  }),
-  age: z.string().min(1, { message: 'เลือกวันเกิด' }),
   ethnicity_id: z.number().optional(), // ทำให้ไม่บังคับกรอก
+
+  age: z.number().min(1, { message: 'เลือกวันเกิด' }),
+  date_of_birth: z.string().optional(),
+  phone_number: z.string().length(10, { message: 'กรุณาใส่เบอร์โทร 10 หลัก' }),
+  // .regex(/^\{10}$/, { message: 'ต้องเป็นตัวเลขเท่านั้น' }),
 });
 
 const StudentRegister = () => {
+  const [prefixes, setPrefixes] = useState<Prefix[]>([]);
+  const [selectedPrefix, setSelectedPrefix] = useState<Prefix | null>(null);
+  const [nationality, setNationality] = useState<Nationality[]>([]);
+  const [selectedNationality, setSelectedNationality] =
+    useState<Nationality | null>(null);
+  const [ethnicity, setEthnicity] = useState<Ethnicity[]>([]);
+  const [selectedEthnicity, setselectedEthnicity] = useState<Ethnicity | null>(
+    null,
+  );
+  const [dateOfBirth, setdateOfBirth] = useState<string>('');
+  const [age, setAge] = useState<number>(0);
+
+  const handleAgeChange = (newAge: number, birthdate: string) => {
+    console.log('Age selected:', newAge); // ดูค่าที่ส่งมา
+    setAge(newAge); // รับค่าจาก BirthDatePicker
+    setdateOfBirth(birthdate); // เก็บค่า birthdate
+  };
   const {
     register,
     control,
@@ -76,16 +98,15 @@ const StudentRegister = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      prefix_id: undefined,
+      nationality_id: undefined,
+      ethnicity_id: undefined,
+      date_of_birth: '',
+      age: 0,
+      phone_number: '',
+    },
   });
-  const [prefixes, setPrefixes] = useState<Prefix[]>([]);
-  const [selectedPrefix, setSelectedPrefix] = useState<Prefix | null>(null);
-  const [nationality, setNationality] = useState<Nationality[]>([]);
-  const [selectedNationality, setSelectedNationality] =
-    useState<Nationality | null>(null);
-  const [ethnicity, setEthnicity] = useState<Ethnicity[]>([]);
-  const [selectedEthnicity, setselectedEthnicity] =
-    useState<Nationality | null>(null);
-  const [age, setAge] = useState(0);
   useEffect(() => {
     const fetchPrefixAndNational = async () => {
       try {
@@ -103,20 +124,27 @@ const StudentRegister = () => {
           setSelectedNationality(nationalData.message[0]); // เลือกสัญชาติตัวแรก
           setValue('nationality_id', nationalData.message[0].id); // ตั้งค่าฟอร์มค่าเริ่มต้น
         }
+        if (ethnicityData.message.length > 0) {
+          setselectedEthnicity(ethnicityData.message[0]); // เลือกสัญชาติตัวแรก
+          setValue('ethnicity_id', ethnicityData.message[0].id); // ตั้งค่าฟอร์มค่าเริ่มต้น
+        }
       } catch (err) {
         console.error(err); // แสดงข้อผิดพลาดใน console
       }
     };
 
     fetchPrefixAndNational(); // เรียกใช้งานฟังก์ชัน
-  }, []);
+  }, [setValue]);
 
-  const handleAgeChange = (newAge: number) => {
-    setAge(newAge); // รับค่าจาก BirthDatePicker
-  };
+  useEffect(() => {
+    setValue('age', age);
+    setValue('date_of_birth', dateOfBirth);
+  }, [age, dateOfBirth, setValue]);
   const onSubmit = (data: any) => {
-    console.log(data);
+    console.log('Submitting...', data);
   };
+  console.log(errors);
+  console.log(age);
   return (
     <div className="flex  justify-center items-center">
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -173,7 +201,7 @@ const StudentRegister = () => {
             )}
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-4 m-4">
+        <div className="grid grid-cols-4 gap-4 m-4">
           {/* ชื่อ (อังกฤษ) */}
           <div>
             <label className="block text-gray-600">ชื่อ (อังกฤษ)</label>
@@ -215,12 +243,30 @@ const StudentRegister = () => {
               </p>
             )}
           </div>
+          <div>
+            <label className="block text-gray-600">เบอร์โทร</label>
+            <input
+              type="text"
+              {...register('phone_number')}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+            />
+            {errors.phone_number && (
+              <p className="text-red-500 text-sm">
+                {errors.phone_number.message}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="grid grid-cols-4 gap-4 m-4">
+        <div className="grid grid-cols-[auto,auto,auto,auto] gap-4 m-4">
           {/* เลือกวันเดือนปีเกิด */}
           <div>
             <label className="block text-gray-600">วันเดือนปีเกิด</label>
             <BirthDatePicker onAgeChange={handleAgeChange} />
+            {/* ฟิลด์ birthdate ที่ซ่อน */}
+            <input
+              type="hidden"
+              {...register('date_of_birth')} // ผูกกับฟิลด์ birthdate
+            />
           </div>
 
           <div>
@@ -228,9 +274,8 @@ const StudentRegister = () => {
             <input
               type="text"
               {...register('age')}
-              value={age}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
-              disabled // ไม่ให้ผู้ใช้แก้ไขอายุ
+              // disabled // ไม่ให้ผู้ใช้แก้ไขอายุ
             />
             {errors.age && (
               <p className="text-red-500 text-sm">{errors.age.message}</p>
@@ -289,6 +334,14 @@ const StudentRegister = () => {
                 {errors.ethnicity_id.message}
               </p>
             )}
+          </div>
+
+          {/* เลือกวันเดือนปีเกิด */}
+        </div>
+        <div className="grid grid-cols-1">
+          <div>
+            <label className="block text-gray-600">ที่อยู่</label>
+            <ThaiAddressSelect register={register} setValue={setValue} />
           </div>
         </div>
         {/* ปุ่ม Submit */}

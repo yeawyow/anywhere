@@ -20,13 +20,13 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
           />
           <SidebarItem
             icon={<HiUser size={20} />}
-            text="StudentRegist"
+            text="ทะเบียนนักศึกษา"
             to="/StudentRegist"
           />
           <SidebarItem
             icon={<HiCog size={20} />}
-            text="Settings"
-            to="/settings"
+            text="ทะเบียนอาจารย์"
+            to="/teacherRegist"
           />
         </Sidebar>
         {/* <!-- ===== Sidebar End ===== --> */}
