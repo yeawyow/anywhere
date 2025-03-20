@@ -13,18 +13,18 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
         {/* <!-- ===== Sidebar Start ===== --> */}
         <Sidebar>
           <SidebarItem
-            icon={<HiHome size={20} />}
+            icon={<HiHome size={15} />}
             text="Dashboard"
             to="/"
             active
           />
           <SidebarItem
-            icon={<HiUser size={20} />}
+            icon={<HiUser size={15} />}
             text="ทะเบียนนักศึกษา"
             to="/StudentRegist"
           />
           <SidebarItem
-            icon={<HiCog size={20} />}
+            icon={<HiCog size={15} />}
             text="ทะเบียนอาจารย์"
             to="/teacherRegist"
           />

@@ -179,7 +179,7 @@ const StudentRegister = () => {
             <input
               type="text"
               {...register('first_name_thai')}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              className="px-3 py-2 border border-gray-300 rounded-md w-full"
             />
             {errors.first_name_thai && (
               <p className="text-red-500 text-sm">
@@ -192,7 +192,7 @@ const StudentRegister = () => {
             <input
               type="text"
               {...register('last_name_thai')}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              className="px-3 py-2 border border-gray-300 rounded-md w-full"
             />
             {errors.last_name_thai && (
               <p className="text-red-500 text-sm">
@@ -208,7 +208,7 @@ const StudentRegister = () => {
             <input
               type="text"
               {...register('first_name_english')}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              className=" px-3 py-2 border border-gray-300 rounded-md w-full"
             />
             {errors.first_name_english && (
               <p className="text-red-500 text-sm">
@@ -221,7 +221,7 @@ const StudentRegister = () => {
             <input
               type="text"
               {...register('last_name_english')}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              className=" px-3 py-2 border border-gray-300 rounded-md w-full"
             />
             {errors.last_name_english && (
               <p className="text-red-500 text-sm">
@@ -235,7 +235,7 @@ const StudentRegister = () => {
             <input
               type="text"
               {...register('national_id')}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              className="px-3 py-2 border border-gray-300 rounded-md w-full"
             />
             {errors.national_id && (
               <p className="text-red-500 text-sm">
@@ -248,7 +248,7 @@ const StudentRegister = () => {
             <input
               type="text"
               {...register('phone_number')}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              className=" px-3 py-2 border border-gray-300 rounded-md w-full"
             />
             {errors.phone_number && (
               <p className="text-red-500 text-sm">
@@ -274,7 +274,7 @@ const StudentRegister = () => {
             <input
               type="text"
               {...register('age')}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              className=" px-3 py-2 border border-gray-300 rounded-md w-full"
               // disabled // ไม่ให้ผู้ใช้แก้ไขอายุ
             />
             {errors.age && (
@@ -338,19 +338,27 @@ const StudentRegister = () => {
 
           {/* เลือกวันเดือนปีเกิด */}
         </div>
-        <div className="grid grid-cols-1">
+        <div className="grid grid-cols-1 gap-4 m-4 ">
           <div>
             <label className="block text-gray-600">ที่อยู่</label>
             <ThaiAddressSelect register={register} setValue={setValue} />
           </div>
         </div>
+        <div className="grid grid-cols-1 gap-4 m-4 ">
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
+          >
+            ลงทะเบียน
+          </button>
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
+          >
+            ยกเลิก
+          </button>
+        </div>
         {/* ปุ่ม Submit */}
-        <button
-          type="submit"
-          className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
-        >
-          ลงทะเบียน
-        </button>
       </form>
     </div>
   );

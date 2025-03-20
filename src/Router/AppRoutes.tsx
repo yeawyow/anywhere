@@ -21,10 +21,12 @@ import AppSettings from '../pages/AppSettings';
 import { verifyToken } from '../hooks/vertifytoken';
 import { isValid } from 'zod';
 import UserManage from '../pages/UserManage';
-import StudentRegist from '../pages/StudentRegist';
+import StudentRegist from '../pages/Regist/StudentRegist';
+import TeacherRegist from '../pages/Regist/TeacherRegist';
 const componentsMap: { [key: string]: React.ElementType } = {
   SignIn,
   StudentRegist,
+  TeacherRegist,
   Dashboard,
   UserManage,
   Profile,

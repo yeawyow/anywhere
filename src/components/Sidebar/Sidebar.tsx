@@ -41,7 +41,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
           <img
             src="https://img.logoipsum.com/243.svg"
             className={`overflow-hidden transition-all ${
-              expanded ? 'w-32' : 'w-0'
+              expanded ? 'w-24' : 'w-0 hidden'
             }`}
             alt="Logo"
           />
@@ -58,10 +58,10 @@ export default function Sidebar({ children }: { children: ReactNode }) {
         </div>
 
         <SidebarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3">{children}</ul>
+          <ul className="flex-1 px-1">{children}</ul>
         </SidebarContext.Provider>
 
-        <div className="border-t flex p-3">
+        {/* <div className="border-t flex p-3">
           <img
             src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
             alt="User Avatar"
@@ -69,16 +69,16 @@ export default function Sidebar({ children }: { children: ReactNode }) {
           />
           <div
             className={`flex justify-between items-center transition-all ${
-              expanded ? 'w-52 ml-3' : 'w-0 overflow-hidden'
+              expanded ? 'w-32 ml-3' : 'w-0 overflow-hidden'
             }`}
-          >
-            <div className="leading-4">
+          > */}
+        {/* <div className="leading-4">
               <h4 className="font-semibold"></h4>
               <span className="text-xs text-gray-600"></span>
             </div>
-            <HiOutlineDotsVertical size={20} />
-          </div>
-        </div>
+            <HiOutlineDotsVertical size={20} /> */}
+        {/* </div> */}
+        {/* </div> */}
       </nav>
     </aside>
   );
@@ -103,7 +103,7 @@ export function SidebarItem({
     <Link to={to}>
       <li
         className={`
-        relative flex items-center py-2 px-3 my-1
+        relative flex items-center py-2 px-3 my-2
         font-medium rounded-md cursor-pointer
         transition-colors group
         ${
@@ -116,14 +116,14 @@ export function SidebarItem({
         {icon}
         <span
           className={`overflow-hidden transition-all ${
-            expanded ? 'w-52 ml-3' : 'w-0'
+            expanded ? 'w-34 ml-1' : 'w-0'
           }`}
         >
           {text}
         </span>
         {alert && (
           <div
-            className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${
+            className={`absolute right-2 w-3 h-2 rounded bg-indigo-400 ${
               expanded ? '' : 'top-2'
             }`}
           />
@@ -131,8 +131,8 @@ export function SidebarItem({
         {!expanded && (
           <div
             className={`
-            absolute left-full rounded-md px-2 py-1 ml-6
-            bg-indigo-100 text-indigo-800 text-sm
+            absolute left-full rounded-md px-2 py-2 ml-3
+            bg-indigo-100 text-indigo-800 text-xs
             invisible opacity-0 -translate-x-3 transition-all
             group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
             group-hover:top-0

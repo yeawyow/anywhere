@@ -108,7 +108,7 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
   }, [selectedProvince, selectedDistrict, selectedSubDistrict, setValue]);
 
   return (
-    <div className="flex space-x-2">
+    <div className="flex space-x-4">
       {/* จังหวัด */}
       <CustomListbox
         label="จังหวัด"
@@ -134,6 +134,31 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
         onChange={setSelectedSubDistrict}
         disabled={!selectedDistrict}
       />
+
+      {/* หมู่ และ บ้านเลขที่ */}
+      <div className="flex space-x-4">
+        {/* หมู่ */}
+        <div className="flex-1">
+          <input
+            type="text"
+            id="villageNumber"
+            className=" px-3 py-2 border border-gray-300 rounded-md w-full"
+            {...register('village_number')}
+            placeholder="หมู่"
+          />
+        </div>
+
+        {/* บ้านเลขที่ */}
+        <div className="flex-1">
+          <input
+            type="text"
+            id="houseNumber"
+            className=" px-3 py-2 border border-gray-300 rounded-md w-full"
+            {...register('house_number')}
+            placeholder="บ้านเลขที่"
+          />
+        </div>
+      </div>
     </div>
   );
 };

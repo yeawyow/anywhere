@@ -27,6 +27,13 @@
     "protected": true
   },
   {
+    "path": "/TeacherRegist",
+    "element": "TeacherRegist",
+    "layout": "DefaultLayout",
+    "title": "ลงทะเบียนอาจารย์",
+    "protected": true
+  },
+  {
     "path": "/userMan",
     "element": "UserManage",
     "layout": "DefaultLayout",
