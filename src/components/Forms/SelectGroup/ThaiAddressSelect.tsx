@@ -8,18 +8,20 @@ import {
 } from '../../../api/provineMahad'; // ปรับให้ตรงกับ API ของคุณ
 
 interface Province {
-  id: string;
-  name_th: string;
+  id: number;
+
+  name_in_thai: string;
 }
 
 interface District {
-  id: string;
-  name_th: string;
+  id: number;
+  // province_id: number;
+  name_in_thai: string;
 }
 
 interface SubDistrict {
-  id: string;
-  name_th: string;
+  id: number;
+  name_in_thai: string;
 }
 
 interface ThaiAddressSelectProps {
@@ -70,6 +72,7 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
         const data = await getDistricts(selectedProvince.id);
         setDistricts(Array.isArray(data) ? data : []);
         setSelectedDistrict(null);
+
         setSelectedSubDistrict(null);
       } catch (error) {
         console.error('Error fetching districts:', error);
@@ -86,12 +89,13 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
       setSelectedSubDistrict(null);
       return;
     }
-
     const fetchSubDistricts = async () => {
       try {
         const data = await getSubDistricts(selectedDistrict.id);
         setSubDistricts(Array.isArray(data) ? data : []);
         setSelectedSubDistrict(null);
+        console.log('distict', selectedDistrict.id);
+        console.log('datasub', data);
       } catch (error) {
         console.error('Error fetching subdistricts:', error);
       }
@@ -102,9 +106,18 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
 
   // อัปเดตค่าใน react-hook-form
   useEffect(() => {
-    setValue('province_id', selectedProvince?.id || '');
-    setValue('district_id', selectedDistrict?.id || '');
-    setValue('sub_district_id', selectedSubDistrict?.id || '');
+    setValue(
+      'province_id',
+      selectedProvince?.id ? selectedProvince.id.toString() : '',
+    );
+    setValue(
+      'district_id',
+      selectedDistrict?.id ? selectedDistrict.id.toString() : '',
+    );
+    setValue(
+      'sub_district_id',
+      selectedSubDistrict?.id ? selectedSubDistrict.id.toString() : '',
+    );
   }, [selectedProvince, selectedDistrict, selectedSubDistrict, setValue]);
 
   return (
@@ -137,25 +150,24 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
 
       {/* หมู่ และ บ้านเลขที่ */}
       <div className="flex space-x-4">
-        {/* หมู่ */}
-        <div className="flex-1">
-          <input
-            type="text"
-            id="villageNumber"
-            className=" px-3 py-2 border border-gray-300 rounded-md w-full"
-            {...register('village_number')}
-            placeholder="หมู่"
-          />
-        </div>
-
         {/* บ้านเลขที่ */}
         <div className="flex-1">
           <input
             type="text"
-            id="houseNumber"
+            id="house_number"
             className=" px-3 py-2 border border-gray-300 rounded-md w-full"
             {...register('house_number')}
             placeholder="บ้านเลขที่"
+          />
+        </div>
+        {/* หมู่ */}
+        <div className="flex-1">
+          <input
+            type="text"
+            id="village_group"
+            className=" px-3 py-2 border border-gray-300 rounded-md w-full"
+            {...register('village_number')}
+            placeholder="หมู่"
           />
         </div>
       </div>
@@ -167,9 +179,9 @@ export default ThaiAddressSelect;
 
 interface ListboxProps {
   label: string;
-  options: { id: string; name_th: string }[];
-  selected: { id: string; name_th: string } | null;
-  onChange: (value: { id: string; name_th: string } | null) => void;
+  options: { id: number; name_in_thai: string }[];
+  selected: { id: number; name_in_thai: string } | null;
+  onChange: (value: { id: number; name_in_thai: string } | null) => void;
   disabled?: boolean;
 }
 
@@ -184,7 +196,9 @@ const CustomListbox: React.FC<ListboxProps> = ({
     <Listbox value={selected} onChange={onChange} disabled={disabled}>
       <div className="relative w-72">
         <Listbox.Button className="relative w-full cursor-pointer bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-left shadow-sm focus:ring-2 focus:ring-indigo-500">
-          <span className="block">{selected ? selected.name_th : label}</span>
+          <span className="block">
+            {selected ? selected.name_in_thai : label}
+          </span>
           <span className="absolute inset-y-0 right-0 flex items-center pr-2">
             <ChevronUpDownIcon className="w-5 h-5 text-gray-400" />
           </span>
@@ -208,7 +222,7 @@ const CustomListbox: React.FC<ListboxProps> = ({
                       selected ? 'font-semibold' : 'font-normal'
                     }`}
                   >
-                    {option.name_th}
+                    {option.name_in_thai}
                   </span>
                   {selected && (
                     <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600">

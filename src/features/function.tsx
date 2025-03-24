@@ -28,3 +28,18 @@ export function calculateAge(birthDate: Date): number {
 
   return age;
 }
+// utils/gender.ts
+
+export const getGenderFromPrefix = (prefixId: number): number => {
+  switch (prefixId) {
+    case 1: // นาย
+    case 4:
+      return 1; // ชาย
+    case 2: // นาง
+    case 3: // นางสาว
+    case 5:
+      return 2; // หญิง
+    default:
+      return 0; // ไม่ระบุ
+  }
+};

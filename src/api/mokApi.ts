@@ -18,3 +18,13 @@ export const getethnicity = async () => {
     ],
   };
 };
+export const geteregion = async () => {
+  // ข้อมูล mock
+  return {
+    message: [
+      { id: 1, region_name_thai: 'พุทธ' },
+      { id: 2, region_name_thai: 'อิสลาม' },
+      { id: 3, region_name_thai: 'คริตส์' },
+    ],
+  };
+};

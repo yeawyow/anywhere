@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { getStudent } from '../../api/sregist';
+import { getStudent, registerStudentApi } from '../../api/sregist';
 
 interface Image {
   type: string;
@@ -27,48 +27,6 @@ interface Student {
   sub_district_id: number;
   district_id: number;
   province_id: number;
-  student_code: string;
-  enrollment_date: string;
-  enrollment_year_id: number;
-  enrollment_term_id: number;
-  graduated_institution: string;
-  graduation_level: string;
-  previous_qualification: string;
-  father_prefix_id: number;
-  father_first_name_thai: string;
-  father_last_name_thai: string;
-  father_national_id: string;
-  father_marital_status_id: number;
-  father_occupation_id: number;
-  father_nationality_id: number;
-  father_phone_number: string;
-  mother_prefix_id: number;
-  mother_first_name_thai: string;
-  mother_last_name_thai: string;
-  mother_national_id: string;
-  mother_marital_status_id: number;
-  mother_occupation_id: number;
-  mother_nationality_id: number;
-  mother_phone_number: string;
-  guardian_prefix_id: number;
-  guardian_first_name_thai: string;
-  guardian_last_name_thai: string;
-  guardian_national_id: string;
-  guardian_relation_to_student: number;
-  guardian_phone_number: string;
-  guardian_occupation_id: number;
-  guardian_nationality_id: number;
-  guardian_house_number: string;
-  guardian_village_group: string;
-  guardian_sub_district_id: number;
-  guardian_district_id: number;
-  guardian_province_id: number;
-  image: Image;
-  student_status_id: number;
-  created_at: string;
-  created_by: string;
-  updated_at: string;
-  updated_by: string;
 }
 
 interface StudentState {
@@ -82,6 +40,24 @@ export const fetchStudentData = createAsyncThunk<Student[], void>( // ดึง�
   async () => {
     const data = await getStudent(); // ดึงข้อมูลจาก API
     return data.message; // เราจะดึงเฉพาะข้อมูลใน message ที่เป็นอาร์เรย์
+  },
+);
+// สร้าง AsyncThunk สำหรับการลงทะเบียนนักเรียน
+export const registerStudent = createAsyncThunk<
+  Student,
+  object,
+  { rejectValue: string }
+>(
+  'student/register', // ชื่อ action
+  async (studentData: object, { rejectWithValue }) => {
+    try {
+      // เรียกใช้งานฟังก์ชัน registerStudent ที่คุณได้เขียนไว้
+      const response = await registerStudentApi(studentData);
+      return response; // ส่งผลลัพธ์กลับไป
+    } catch (error) {
+      console.error('Error registering student:', error);
+      return rejectWithValue(error); // ถ้ามีข้อผิดพลาดให้ส่งไปที่ reject
+    }
   },
 );
 
@@ -111,6 +87,16 @@ const studentSlice = createSlice({
       .addCase(fetchStudentData.rejected, (state, action) => {
         state.status = 'failed'; // ถ้าเกิดข้อผิดพลาด
         state.error = action.error.message || 'Error occurred';
+      })
+      .addCase(registerStudent.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(registerStudent.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        // state.student.push(action.payload); // เพิ่มข้อมูลที่ได้รับจาก API
+      })
+      .addCase(registerStudent.rejected, (state) => {
+        state.status = 'failed';
       });
   },
 });

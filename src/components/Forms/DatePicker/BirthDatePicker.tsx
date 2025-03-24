@@ -76,30 +76,29 @@ const BirthDatePicker: React.FC<BirthDatePickerProps> = ({ onAgeChange }) => {
   }, [selectedDay, selectedMonth, selectedYear]);
 
   return (
-    <div>
-      <div className="flex space-x-2">
-        {/* เลือกวัน */}
-        <CustomListbox
-          label="วัน"
-          options={days}
-          selected={selectedDay}
-          onChange={setSelectedDay}
-        />
-        {/* เลือกเดือน */}
-        <CustomListbox
-          label="เดือน"
-          options={months}
-          selected={selectedMonth}
-          onChange={setSelectedMonth}
-        />
-        {/* เลือกปี */}
-        <CustomListbox
-          label="ปี"
-          options={years}
-          selected={selectedYear}
-          onChange={setSelectedYear}
-        />
-      </div>
+    <div className="grid grid-cols-3 gap-4">
+      {/* เลือกวัน */}
+      <CustomListbox
+        label="วัน"
+        options={days}
+        selected={selectedDay}
+        onChange={setSelectedDay}
+      />
+      {/* เลือกเดือน */}
+      <CustomListbox
+        label="เดือน"
+        options={months}
+        selected={selectedMonth}
+        onChange={setSelectedMonth}
+      />
+      {/* เลือกปี */}
+      <CustomListbox
+        label="ปี"
+        options={years}
+        selected={selectedYear}
+        onChange={setSelectedYear}
+      />
+
       {/* <div className="mt-2">
         <p>วันที่เลือก: {getFormattedDate()}</p>
       </div> */}

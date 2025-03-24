@@ -5,6 +5,7 @@ import {
   API_GET_DISTRICT,
   API_GET_SUBDISTRICTS,
   API_GET_STUDENT,
+  API_REGIST_STUDENT,
 } from '../config/constants';
 
 export const getPrefix = async () => {
@@ -19,7 +20,18 @@ export const getPrefix = async () => {
     throw error; // โยน error ออกไปให้ component ที่เรียกใช้งานจัดการ
   }
 };
-
+export const registerStudentApi = async (studentData: object) => {
+  try {
+    const response = await api.post(API_REGIST_STUDENT, studentData, {
+      withCredentials: true,
+    });
+    console.log('registerStudent Response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error registering student:', error);
+    throw error;
+  }
+};
 export const getStudent = async () => {
   try {
     const response = await api.get(`${API_GET_STUDENT}`, {

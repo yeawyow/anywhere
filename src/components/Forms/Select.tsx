@@ -24,7 +24,7 @@ const Select = <T extends SelectOption>({
 }: SelectProps<T>) => {
   return (
     <Listbox value={value} onChange={onChange}>
-      <div className="relative mt-1">
+      <div className="relative ">
         <Listbox.Button className="relative w-full cursor-pointer bg-white border border-gray-300 rounded-md py-2 pl-3 pr-10 text-left shadow-sm focus:ring-2 focus:ring-indigo-500">
           <span className="block truncate">
             {label
