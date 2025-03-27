@@ -1,7 +1,27 @@
 import flatpickr from 'flatpickr';
 import { useEffect } from 'react';
-
-const DatePickerOne = () => {
+interface DatePickerProps {
+  label: string;
+  name: string;
+  register: any;
+  errors: any;
+  type?: string;
+  placeholder?: string;
+  className?: string;
+  validation?: object;
+  readOnly?: boolean;
+}
+const DatePickerOne: React.FC<DatePickerProps> = ({
+  label,
+  name,
+  register,
+  errors,
+  type = 'text',
+  placeholder = '',
+  className = '',
+  validation = {},
+  readOnly,
+}) => {
   useEffect(() => {
     // Init flatpickr
     flatpickr('.form-datepicker', {
@@ -14,22 +34,20 @@ const DatePickerOne = () => {
       nextArrow:
         '<svg className="fill-current" width="7" height="11" viewBox="0 0 7 11"><path d="M1.4 10.8L0 9.4l4-4-4-4L1.4 0l5.4 5.4z" /></svg>',
     });
-
-    
   }, []);
 
   return (
     <div>
-      <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-        Date picker
-      </label>
+      <label className="block text-gray-600">{label}</label>
       <div className="relative">
         <input
-          className="form-datepicker w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-normal outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+          type={type}
+          className={`form-datepicker px-3 py-2 border border-gray-300 rounded-md w-full  ${className}`}
           placeholder="mm/dd/yyyy"
+          {...register(name, validation)}
           data-class="flatpickr-right"
+          readOnly={readOnly}
         />
-
         <div className="pointer-events-none absolute inset-0 left-auto right-5 flex items-center">
           <svg
             width="18"

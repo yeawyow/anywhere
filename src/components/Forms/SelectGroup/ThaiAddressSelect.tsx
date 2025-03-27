@@ -9,10 +9,8 @@ import {
 
 interface Province {
   id: number;
-
   name_in_thai: string;
 }
-
 interface District {
   id: number;
   // province_id: number;
@@ -26,7 +24,7 @@ interface SubDistrict {
 
 interface ThaiAddressSelectProps {
   register: any;
-  setValue: (name: string, value: string) => void;
+  setValue: (name: string, value: number) => void;
 }
 
 const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
@@ -106,22 +104,16 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
 
   // อัปเดตค่าใน react-hook-form
   useEffect(() => {
-    setValue(
-      'province_id',
-      selectedProvince?.id ? selectedProvince.id.toString() : '',
-    );
-    setValue(
-      'district_id',
-      selectedDistrict?.id ? selectedDistrict.id.toString() : '',
-    );
+    setValue('province_id', selectedProvince?.id ? selectedProvince.id : 0);
+    setValue('district_id', selectedDistrict?.id ? selectedDistrict.id : 0);
     setValue(
       'sub_district_id',
-      selectedSubDistrict?.id ? selectedSubDistrict.id.toString() : '',
+      selectedSubDistrict?.id ? selectedSubDistrict.id : 0,
     );
   }, [selectedProvince, selectedDistrict, selectedSubDistrict, setValue]);
 
   return (
-    <div className="flex space-x-4">
+    <div className="flex space-x-5">
       {/* จังหวัด */}
       <CustomListbox
         label="จังหวัด"
@@ -149,27 +141,26 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
       />
 
       {/* หมู่ และ บ้านเลขที่ */}
-      <div className="flex space-x-4">
-        {/* บ้านเลขที่ */}
-        <div className="flex-1">
-          <input
-            type="text"
-            id="house_number"
-            className=" px-3 py-2 border border-gray-300 rounded-md w-full"
-            {...register('house_number')}
-            placeholder="บ้านเลขที่"
-          />
-        </div>
-        {/* หมู่ */}
-        <div className="flex-1">
-          <input
-            type="text"
-            id="village_group"
-            className=" px-3 py-2 border border-gray-300 rounded-md w-full"
-            {...register('village_number')}
-            placeholder="หมู่"
-          />
-        </div>
+
+      {/* บ้านเลขที่ */}
+      <div className="flex-1">
+        <input
+          type="text"
+          id="house_number"
+          className=" px-3 py-2 border border-gray-300 rounded-md w-full"
+          {...register('house_number')}
+          placeholder="บ้านเลขที่"
+        />
+      </div>
+      {/* หมู่ */}
+      <div className="flex-1">
+        <input
+          type="text"
+          id="village_group"
+          className=" px-3 py-2 border border-gray-300 rounded-md w-full"
+          {...register('village_group')}
+          placeholder="หมู่"
+        />
       </div>
     </div>
   );

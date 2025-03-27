@@ -6,6 +6,7 @@ import {
   API_GET_SUBDISTRICTS,
   API_GET_STUDENT,
   API_REGIST_STUDENT,
+  API_GET_ENROLLMENT_YEARS,
 } from '../config/constants';
 
 export const getPrefix = async () => {
@@ -35,10 +36,10 @@ export const registerStudentApi = async (studentData: object) => {
 export const getStudent = async () => {
   try {
     const response = await api.get(`${API_GET_STUDENT}`, {
-      withCredentials: true,
+      // withCredentials: true,
     });
     console.log('getStudent Response Data:', response.data);
-    return response.data; // ให้แน่ใจว่ามีข้อมูลใน response.data
+    return response.data.message; // ให้แน่ใจว่ามีข้อมูลใน response.data
   } catch (error) {
     console.error('Error fetching student data:', error);
     throw error;
@@ -74,6 +75,16 @@ export const getSubDistricts = async (districtId) => {
         withCredentials: true,
       },
     );
+    return response.data;
+    getSubDistricts;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getEnrollmentYear = async () => {
+  try {
+    const response = await api.get(`${API_GET_ENROLLMENT_YEARS}`);
     return response.data;
     getSubDistricts;
   } catch (error) {

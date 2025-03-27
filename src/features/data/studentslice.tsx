@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { getStudent, registerStudentApi } from '../../api/sregist';
 
-interface Image {
-  type: string;
-  data: any[]; // หรือ Buffer ถ้าจำเป็น
-}
-
 interface Student {
   id: number;
   prefix_id: number;
@@ -27,42 +22,49 @@ interface Student {
   sub_district_id: number;
   district_id: number;
   province_id: number;
+  image: string;
 }
 
 interface StudentState {
-  student: Student[]; // ปรับเป็นอาร์เรย์ของ Student
+  studentList: Student[];
+  selectedStudent: Student | null;
+  studentFormData: Partial<Student>;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
 
-export const fetchStudentData = createAsyncThunk<Student[], void>( // ดึงข้อมูลเป็น Student[]
+export const fetchStudentData = createAsyncThunk<Student[], void>(
   'student/fetchStudentData',
   async () => {
-    const data = await getStudent(); // ดึงข้อมูลจาก API
-    return data.message; // เราจะดึงเฉพาะข้อมูลใน message ที่เป็นอาร์เรย์
+    const data = await getStudent();
+    return data;
   },
 );
+
 // สร้าง AsyncThunk สำหรับการลงทะเบียนนักเรียน
 export const registerStudent = createAsyncThunk<
   Student,
-  object,
+  Partial<Student>, // เปลี่ยนเป็น Partial<Student> เพื่อรองรับข้อมูลที่ไม่ครบถ้วน
   { rejectValue: string }
 >(
-  'student/register', // ชื่อ action
-  async (studentData: object, { rejectWithValue }) => {
+  'student/register',
+  async (studentData: Partial<Student>, { rejectWithValue }) => {
     try {
-      // เรียกใช้งานฟังก์ชัน registerStudent ที่คุณได้เขียนไว้
+      console.log(studentData);
       const response = await registerStudentApi(studentData);
-      return response; // ส่งผลลัพธ์กลับไป
+
+      return response;
     } catch (error) {
       console.error('Error registering student:', error);
-      return rejectWithValue(error); // ถ้ามีข้อผิดพลาดให้ส่งไปที่ reject
+      return rejectWithValue('Registration failed. Please try again.'); // เพิ่มข้อความผิดพลาด
     }
   },
 );
 
 const initialState: StudentState = {
-  student: [], // กำหนด state ให้เป็นอาร์เรย์ของ Student
+  studentList: [],
+  selectedStudent: null,
+  studentFormData: {},
   status: 'idle',
   error: null,
 };
@@ -74,18 +76,17 @@ const studentSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchStudentData.pending, (state) => {
-        state.status = 'loading'; // เริ่มโหลด
+        state.status = 'loading';
       })
       .addCase(
         fetchStudentData.fulfilled,
         (state, action: PayloadAction<Student[]>) => {
-          // เปลี่ยนเป็น Student[]
-          state.status = 'succeeded'; // ถ้าข้อมูลมาครบ
-          state.student = action.payload; // เก็บข้อมูลที่ได้รับ
+          state.status = 'succeeded';
+          state.studentList = action.payload;
         },
       )
       .addCase(fetchStudentData.rejected, (state, action) => {
-        state.status = 'failed'; // ถ้าเกิดข้อผิดพลาด
+        state.status = 'failed';
         state.error = action.error.message || 'Error occurred';
       })
       .addCase(registerStudent.pending, (state) => {
@@ -93,10 +94,11 @@ const studentSlice = createSlice({
       })
       .addCase(registerStudent.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        // state.student.push(action.payload); // เพิ่มข้อมูลที่ได้รับจาก API
+        state.studentList.push(action.payload); // เพิ่มข้อมูลที่ได้จาก API
       })
-      .addCase(registerStudent.rejected, (state) => {
+      .addCase(registerStudent.rejected, (state, action) => {
         state.status = 'failed';
+        state.error = action.payload || 'Registration failed';
       });
   },
 });

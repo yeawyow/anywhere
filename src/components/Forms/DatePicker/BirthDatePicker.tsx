@@ -45,7 +45,7 @@ const BirthDatePicker: React.FC<BirthDatePickerProps> = ({ onAgeChange }) => {
     const day = selectedDay.name.padStart(2, '0'); // เติม 0 หน้าเลข 1 หลัก
     const month = selectedMonth.id.toString().padStart(2, '0'); // เติม 0 หน้าเดือนที่เป็นเลข 1 หลัก
     const year = selectedYear.id.toString(); // ปี พ.ศ.
-    const birthdate = `${day}-${month}-${year}`;
+    const birthdate = `${year}-${month}-${day}`;
     return birthdate;
   };
 

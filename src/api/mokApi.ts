@@ -1,4 +1,4 @@
-export const getNational = async () => {
+export const getNationality = async () => {
   // ข้อมูล mock
   return {
     message: [

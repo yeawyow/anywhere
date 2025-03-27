@@ -3,7 +3,7 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { IoIosPersonAdd } from 'react-icons/io';
 import { useEffect, useState } from 'react';
 import Modal from '../../components/ui/modal/Modal';
-import StudentRegistrationForm from '../Form/StudentRegForm';
+import StudentRegistrationForm from '../../components/Forms/StudentRegForm';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../app/store';
 import { fetchStudentData } from '../../features/data/studentslice';
@@ -11,9 +11,8 @@ import TableStudent from '../../components/Tables/TableStudent';
 
 export default function StudentRegist() {
   const [isOpen, setIsOpen] = useState(false);
-
   const dispatch = useDispatch<AppDispatch>();
-  const student = useSelector((state: RootState) => state.student.student);
+  const student = useSelector((state: RootState) => state.student.studentList);
   const status = useSelector((state: RootState) => state.student.status);
   const error = useSelector((state: RootState) => state.student.error);
 
@@ -56,7 +55,7 @@ export default function StudentRegist() {
         title="ลงทะเบียนนักศึกษา"
         fullscreen={true}
       >
-        <StudentRegistrationForm />
+        <StudentRegistrationForm onClose={() => setIsOpen(false)} />
       </Modal>
     </>
   );

@@ -6,6 +6,8 @@ export const API_GET_PREFIX = '/getPrefix';
 export const API_GET_PROVINCE = '/getProvince';
 export const API_GET_DISTRICT = '/getDistrictByProvinceId/';
 export const API_GET_SUBDISTRICTS = '/getSubDistrictByDistrictId/';
+export const API_GET_ENROLLMENT_YEARS = '/getEnrollmentYear';
+
 export const API_REGIST_STUDENT = '/registerStudent';
 // export const API_GET_NATIONAL = '/getNational';
 export const API_GET_STUDENT = '/getStudents';
