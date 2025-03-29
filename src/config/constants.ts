@@ -7,9 +7,9 @@ export const API_GET_PROVINCE = '/getProvince';
 export const API_GET_DISTRICT = '/getDistrictByProvinceId/';
 export const API_GET_SUBDISTRICTS = '/getSubDistrictByDistrictId/';
 export const API_GET_ENROLLMENT_YEARS = '/getEnrollmentYear';
-
+export const API_GET_ENROLLMENT_TERM = '/getENrollmentTerm';
 export const API_REGIST_STUDENT = '/registerStudent';
-// export const API_GET_NATIONAL = '/getNational';
+export const API_GET_EDUINSTITU = '/getEducationalInstitutions';
 export const API_GET_STUDENT = '/getStudents';
 export const APP_NAME = 'ระบบการจัดการเรียนรู้ ANYWHERE ANYTIME';
 export const INSTITUION = 'ATEC INTER ASIA  ';

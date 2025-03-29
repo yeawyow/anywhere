@@ -7,6 +7,8 @@ import {
   API_GET_STUDENT,
   API_REGIST_STUDENT,
   API_GET_ENROLLMENT_YEARS,
+  API_GET_ENROLLMENT_TERM,
+  API_GET_EDUINSTITU,
 } from '../config/constants';
 
 export const getPrefix = async () => {
@@ -85,6 +87,24 @@ export const getSubDistricts = async (districtId) => {
 export const getEnrollmentYear = async () => {
   try {
     const response = await api.get(`${API_GET_ENROLLMENT_YEARS}`);
+    return response.data;
+    getSubDistricts;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getEnrollmentTerm = async () => {
+  try {
+    const response = await api.get(`${API_GET_ENROLLMENT_TERM}`);
+    return response.data;
+    getSubDistricts;
+  } catch (error) {
+    throw error;
+  }
+};
+export const getEducationalInstitutions = async () => {
+  try {
+    const response = await api.get(`${API_GET_EDUINSTITU}`);
     return response.data;
     getSubDistricts;
   } catch (error) {

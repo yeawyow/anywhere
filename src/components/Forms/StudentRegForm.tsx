@@ -2,7 +2,12 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState } from 'react';
-import { getPrefix, getEnrollmentYear } from '../../api/sregist';
+import {
+  getPrefix,
+  getEnrollmentYear,
+  getEnrollmentTerm,
+  getEducationalInstitutions,
+} from '../../api/sregist';
 import BirthDatePicker from './DatePicker/BirthDatePicker';
 import DatePickerOne from './DatePicker/DatePickerOne';
 import Select from './Select';
@@ -39,6 +44,16 @@ interface EnrollmentYear {
   id: number;
   enrollment_year_name: string;
   [key: string]: string | number; // เพิ่ม index signature
+}
+interface EnrollmentTerm {
+  id: number;
+  enrollment_term_name: string;
+  [key: string]: string | number; // เพิ่ม index signature
+}
+interface EducaInstitut {
+  id: number;
+  educational_institution_name: string;
+  [key: string]: string | number;
 }
 interface Props {
   onClose: () => void;
@@ -99,6 +114,8 @@ const schema = z.object({
     .number()
     .int({ message: 'คำนำหน้าต้องเป็นจำนวนเต็ม' }) // ตรวจสอบให้เป็นจำนวนเต็ม
     .min(1, { message: 'กรุณาเลือกคำนำหน้า' }), // ค่าต้องมากกว่า 0
+  enrollment_term_id: z.number().optional(),
+  educational_institution_id: z.number().optional(),
 });
 
 const StudentRegister = ({ onClose }: Props) => {
@@ -113,15 +130,21 @@ const StudentRegister = ({ onClose }: Props) => {
   const [selectedEthnicity, setselectedEthnicity] = useState<Ethnicity | null>(
     null,
   );
+  const [EducationalI, setEducationalI] = useState<EducaInstitut[]>([]);
+  const [selectedEducationalI, setselectedEducationalI] =
+    useState<EducaInstitut | null>(null);
   const [enrollment_year, SetEnrollment_year] = useState<EnrollmentYear[]>([]);
   const [selectedEnrollment_year, SetselectedEnrollment_year] =
-    useState<EnrollmentYear>();
+    useState<EnrollmentTerm>();
+  const [enrollmentTerm, SetEnrollmentTerm] = useState<EnrollmentYear[]>([]);
+  const [selectedEnrollmentTerm, SetselectedEnrollmentTerm] =
+    useState<EnrollmentTerm>();
   const [region, setRegion] = useState<Region[]>([]);
   const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
   const [date_of_birth, setdateOfBirth] = useState<string>('');
   const [age, setAge] = useState<number>(0);
   const handleAgeChange = (newAge: number, birthdate: string) => {
-    console.log('Age selected:', newAge); // ดูค่าที่ส่งมา
+    // console.log('Age selected:', newAge); // ดูค่าที่ส่งมา
     setAge(newAge); // รับค่าจาก BirthDatePicker
     setdateOfBirth(birthdate); // เก็บค่า birthdate
   };
@@ -150,12 +173,16 @@ const StudentRegister = ({ onClose }: Props) => {
           ethnicityData,
           geteregionData,
           getEnrollmentYearData,
+          getEnrollmentTermData,
+          getEducationalInstitutionsData,
         ] = await Promise.all([
           getPrefix(), // ดึงข้อมูล Prefix
           getNationality(), // ดึงข้อมูล National
           getethnicity(),
           geteregion(),
           getEnrollmentYear(),
+          getEnrollmentTerm(),
+          getEducationalInstitutions(),
         ]);
 
         setPrefixes(prefixData.message); // เก็บข้อมูล Prefix
@@ -163,7 +190,8 @@ const StudentRegister = ({ onClose }: Props) => {
         setEthnicity(ethnicityData.message);
         setRegion(geteregionData.message);
         SetEnrollment_year(getEnrollmentYearData.message);
-        console.log(enrollment_year);
+        SetEnrollmentTerm(getEnrollmentTermData.message);
+        setEducationalI(getEducationalInstitutionsData.message);
 
         if (nationalityData.message.length > 0) {
           setSelectedNationality(nationalityData.message[0]); // เลือกสัญชาติตัวแรก
@@ -405,7 +433,7 @@ const StudentRegister = ({ onClose }: Props) => {
             errors={errors}
           />
         </div>
-        <div className="grid grid-cols-4 gap-4 m-4">
+        <div className="grid grid-cols-5 gap-4 m-4">
           <InputField
             label="รหัสนักศึกษา"
             name="student_code"
@@ -457,8 +485,69 @@ const StudentRegister = ({ onClose }: Props) => {
               </p>
             )}
           </div>
+          <div>
+            <label className="block text-gray-600">ภาคเรียน</label>
+            <Controller
+              name="enrollment_term_id"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  options={enrollmentTerm}
+                  value={
+                    selectedEnrollmentTerm || {
+                      id: '',
+                      enrollment_term_name: '',
+                    }
+                  } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                  onChange={(selectedEnrollmentTerm: any) => {
+                    SetselectedEnrollment_year(selectedEnrollmentTerm);
+                    field.onChange(selectedEnrollmentTerm.id);
+                  }}
+                  label={selectedEnrollmentTerm ? '' : 'เลือกภาคเรียน'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                  valueKey="id"
+                  displayKey="enrollment_term_name"
+                />
+              )}
+            />
+            {errors.enrollment_term_id && (
+              <p className="text-red-500 text-sm">
+                {errors.enrollment_term_id.message}
+              </p>
+            )}
+          </div>
         </div>
-
+        <div className="grid grid-cols-4 gap-4 m-4">
+          <div>
+            <label className="block text-gray-600">จบจาก</label>
+            <Controller
+              name="educational_institution_id"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  options={EducationalI}
+                  value={
+                    selectedEducationalI || {
+                      id: '',
+                      educational_institution_name: '',
+                    }
+                  } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                  onChange={(selectedEducationalI: any) => {
+                    setselectedEducationalI(selectedEducationalI);
+                    field.onChange(selectedEducationalI.id);
+                  }}
+                  label={selectedEducationalI ? '' : 'เลือกโรงเรียนที่จบ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                  valueKey="id"
+                  displayKey="educational_institution_name"
+                />
+              )}
+            />
+            {errors.educational_institution_id && (
+              <p className="text-red-500 text-sm">
+                {errors.educational_institution_id.message}
+              </p>
+            )}
+          </div>
+        </div>
         <button
           type="submit"
           onSubmit={handleSubmit(onSubmit)}
