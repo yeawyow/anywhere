@@ -1,9 +1,9 @@
 import api from './axiosInstance';
-import { API_LOGIN, API_LOGOUT } from '../config/constants';
+import { API_POST } from '../config/constants';
 
 export const loginApi = async (username: string, password: string) => {
   const response = await api.post(
-    `${API_LOGIN}`,
+    `${API_POST.LOGIN}`,
     { username, password },
     { withCredentials: true },
   );
@@ -17,6 +17,6 @@ export const loginApi = async (username: string, password: string) => {
 
 export const logoutApi = async () => {
   const token = sessionStorage.getItem('token');
-  const response = await api.post(`${API_LOGOUT}`, { token });
+  const response = await api.post(`${API_POST.LOGOUT}`, { token });
   return response;
 };

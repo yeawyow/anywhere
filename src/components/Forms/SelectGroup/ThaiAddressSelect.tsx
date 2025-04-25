@@ -5,8 +5,7 @@ import {
   getProvince,
   getDistricts,
   getSubDistricts,
-} from '../../../api/provineMahad'; // ปรับให้ตรงกับ API ของคุณ
-
+} from '../../../api/sregist';
 interface Province {
   id: number;
   name_in_thai: string;
@@ -56,7 +55,7 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
     };
     fetchProvinces();
   }, []);
-
+  console.log('จังหวัด', provinces);
   // โหลดอำเภอเมื่อเลือกจังหวัด
   useEffect(() => {
     if (!selectedProvince) {
@@ -66,6 +65,7 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
     }
 
     const fetchDistricts = async () => {
+      console.log('idd', selectedProvince.id);
       try {
         const data = await getDistricts(selectedProvince.id);
         setDistricts(Array.isArray(data) ? data : []);

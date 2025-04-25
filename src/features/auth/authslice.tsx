@@ -66,7 +66,6 @@ const authSlice = createSlice({
     ) => {
       state.isAuthenticated = action.payload.valid;
       state.user_info = action.payload.user; // ✅ อัปเดตข้อมูล user
-      console.log('verify', action.payload);
     },
   },
   extraReducers: (builder) => {

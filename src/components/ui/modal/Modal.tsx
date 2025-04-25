@@ -35,14 +35,14 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="fixed inset-0 z-50" onClose={onClose}>
+      <Dialog as="div" className="fixed inset-0 z-50 " onClose={onClose}>
         {/* Overlay (พื้นหลังมืด) */}
         <div className="fixed inset-0 bg-black bg-opacity-50" />
 
         {/* Modal Content (อยู่ตรงกลาง) */}
         <div className="fixed inset-0 flex items-center justify-center z-10">
           <Dialog.Panel
-            className={`bg-white rounded-lg p-6 shadow-lg w-full ${fullscreenClasses}`}
+            className={`bg-white rounded-lg p-6 shadow-lg w-full max-h-screen overflow-y-auto ${fullscreenClasses}`}
           >
             {title && (
               <Dialog.Title className="text-lg font-semibold">

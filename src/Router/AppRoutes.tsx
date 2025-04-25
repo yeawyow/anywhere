@@ -23,6 +23,8 @@ import { isValid } from 'zod';
 import UserManage from '../pages/UserManage';
 import StudentRegist from '../pages/Regist/StudentRegist';
 import TeacherRegist from '../pages/Regist/TeacherRegist';
+import UserList from '../pages/Regist/UserList';
+
 const componentsMap: { [key: string]: React.ElementType } = {
   SignIn,
   StudentRegist,
@@ -33,6 +35,7 @@ const componentsMap: { [key: string]: React.ElementType } = {
   Settings,
   AppSettings,
   PageAceess,
+  UserList,
 };
 
 const layoutMap: { [key: string]: React.ElementType } = {
@@ -48,7 +51,7 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated,
   );
-  console.log(isAuthenticated);
+  // console.log(isAuthenticated);
   const dispatch = useDispatch();
   useEffect(() => {
     const checkVerify = async () => {
@@ -56,7 +59,7 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
       setCheckingAuth(false);
       if (isValid) {
         navigate(window.location.pathname || '/', { replace: true }); // ✅ ถ้าไม่มี pathname ให้ไปที่ "/"
-        console.log('isvaid', isValid);
+        // console.log('isvaid', isValid);
       }
     };
     if (token === null) {

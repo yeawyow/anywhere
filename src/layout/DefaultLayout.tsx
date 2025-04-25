@@ -28,6 +28,8 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
             text="ทะเบียนอาจารย์"
             to="/teacherRegist"
           />
+
+          <SidebarItem icon={<HiCog size={15} />} text="USER" to="/userlist" />
         </Sidebar>
         {/* <!-- ===== Sidebar End ===== --> */}
 

@@ -1,6 +1,6 @@
 import api from '../api/axiosInstance';
 import { setAuth } from '../features/auth/authslice';
-import { VERIFY_TOKEN } from '../config/constants';
+import { API_POST } from '../config/constants';
 
 export const verifyToken = async (dispatch: any, token: any) => {
   if (!token) {
@@ -9,10 +9,10 @@ export const verifyToken = async (dispatch: any, token: any) => {
     return false;
   }
   try {
-    const response = await api.post(`${VERIFY_TOKEN}`); // API ตรวจสอบ token
+    const response = await api.post(`${API_POST.VERIFY}`); // API ตรวจสอบ token
     // console.log("data5",response.data.valid)
     const { valid, user_info } = response.data.message;
-    console.log(response.data);
+    // console.log(response.data);
     if (valid) {
       dispatch(setAuth({ valid: true, user: user_info })); // ✅ อัปเดต Redux state
       // dispatch(setUser(response.data));
