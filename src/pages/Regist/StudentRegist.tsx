@@ -19,7 +19,6 @@ export default function StudentRegist() {
   useEffect(() => {
     dispatch(fetchStudentData());
   }, [dispatch]);
-  console.log(isOpen);
   return (
     <>
       <Breadcrumb pageName="ทะเบียนนักศึกษา" />

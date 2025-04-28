@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
-import ProtectRoute from '../Router/'; // ปรับตามชื่อไฟล์ที่ใช้
+import ProtectRoute from '../Router'; // ปรับตามชื่อไฟล์ที่ใช้
 import DefaultLayout from '../layout/DefaultLayout';
 import BlankLayout from '../layout/BlankLayout';
 import Loader from '../common/Loader';
+import { ReactNode } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../app/store';
 
 // 🔹 Import JSON Routes
-import routesData from './routes.json';
 import SignIn from '../pages/Authentication/SignIn';
 import Settings from '../pages/Settings';
 import Dashboard from '../pages/Dashboard/Dashboard';
@@ -17,13 +17,13 @@ import Profile from '../pages/Profile';
 import PageTitle from '../components/PageTitle';
 import PageAceess from '../pages/PageAceess';
 import AppSettings from '../pages/AppSettings';
-
-import { verifyToken } from '../hooks/vertifytoken';
-import { isValid } from 'zod';
 import UserManage from '../pages/UserManage';
 import StudentRegist from '../pages/Regist/StudentRegist';
 import TeacherRegist from '../pages/Regist/TeacherRegist';
 import UserList from '../pages/Regist/UserList';
+
+import { verifyToken } from '../hooks/vertifytoken';
+import { appRoutes } from './routes';
 
 const componentsMap: { [key: string]: React.ElementType } = {
   SignIn,
@@ -42,53 +42,63 @@ const layoutMap: { [key: string]: React.ElementType } = {
   DefaultLayout,
   BlankLayout,
 };
-
+export type AppRoute = {
+  path: string;
+  element: string;
+  layout?: string;
+  title?: string;
+  protected: boolean;
+  roles?: string[]; // <-- Add this line to support roles
+  icon?: ReactNode;
+};
 const AppRoutes = ({ loading }: { loading: boolean }) => {
   const navigate = useNavigate();
   const [checkingAuth, setCheckingAuth] = useState(true);
-  const token = sessionStorage.getItem('token');
+  const dispatch = useDispatch();
 
+  const token = sessionStorage.getItem('token');
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated,
   );
-  // console.log(isAuthenticated);
-  const dispatch = useDispatch();
+
+  const currentPath = window.location.pathname;
+
   useEffect(() => {
     const checkVerify = async () => {
-      const isValid = await verifyToken(dispatch, token);
+      const tokenIsValid = await verifyToken(dispatch, token);
       setCheckingAuth(false);
-      if (isValid) {
-        navigate(window.location.pathname || '/', { replace: true }); // ✅ ถ้าไม่มี pathname ให้ไปที่ "/"
-        // console.log('isvaid', isValid);
+      if (tokenIsValid) {
+        navigate(currentPath || '/', { replace: true });
       }
     };
+
     if (token === null) {
-      setCheckingAuth(false); // ถ้าไม่ authenticated ไม่ต้องรอ token
+      setCheckingAuth(false);
     } else {
       checkVerify();
     }
-  }, [navigate, isValid, dispatch, window.location.pathname]);
+  }, [navigate, dispatch, token, currentPath]);
 
   if (loading || checkingAuth) return <Loader />;
+
   if (!isAuthenticated) {
-    // ✅ ถ้าผู้ใช้ยังไม่ได้ล็อกอิน และอยู่ที่ /signin → แสดงหน้า SignIn
-    return window.location.pathname === '/login' ? (
+    return currentPath === '/login' ? (
       <SignIn />
     ) : (
       <Navigate to="/login" replace />
     );
   }
 
-  // ✅ ถ้าผู้ใช้ล็อกอินแล้ว แต่พยายามเข้าหน้า /signin → ให้ Redirect ไป Dashboard (/)
-  if (isAuthenticated && window.location.pathname === '/login') {
+  if (isAuthenticated && currentPath === '/login') {
     return <Navigate to="/" replace />;
   }
+
   return (
     <Routes>
-      {routesData.map(
-        ({ path, element, layout, title, protected: isProtected }) => {
-          const Component = componentsMap[element] || PageAceess; // หากไม่พบ Component ให้ใช้ PageAceess
-          const Layout = layout ? layoutMap[layout] : React.Fragment; // เลือก Layout หากไม่มีใช้ React.Fragment
+      {appRoutes.map(
+        ({ path, element, layout, title, protected: isProtected, roles }) => {
+          const Component = componentsMap[element] || PageAceess;
+          const Layout = layout ? layoutMap[layout] : React.Fragment;
 
           const RouteElement = (
             <Layout>
@@ -103,7 +113,9 @@ const AppRoutes = ({ loading }: { loading: boolean }) => {
               path={path}
               element={
                 isProtected ? (
-                  <ProtectRoute>{RouteElement}</ProtectRoute>
+                  <ProtectRoute allowedRoles={roles}>
+                    {RouteElement}
+                  </ProtectRoute>
                 ) : (
                   RouteElement
                 )

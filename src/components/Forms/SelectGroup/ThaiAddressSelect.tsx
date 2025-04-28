@@ -55,7 +55,6 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
     };
     fetchProvinces();
   }, []);
-  console.log('จังหวัด', provinces);
   // โหลดอำเภอเมื่อเลือกจังหวัด
   useEffect(() => {
     if (!selectedProvince) {
@@ -65,7 +64,6 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
     }
 
     const fetchDistricts = async () => {
-      console.log('idd', selectedProvince.id);
       try {
         const data = await getDistricts(selectedProvince.id);
         setDistricts(Array.isArray(data) ? data : []);
@@ -92,8 +90,6 @@ const ThaiAddressSelect: React.FC<ThaiAddressSelectProps> = ({
         const data = await getSubDistricts(selectedDistrict.id);
         setSubDistricts(Array.isArray(data) ? data : []);
         setSelectedSubDistrict(null);
-        console.log('distict', selectedDistrict.id);
-        console.log('datasub', data);
       } catch (error) {
         console.error('Error fetching subdistricts:', error);
       }

@@ -55,8 +55,10 @@ export const registerStudent = createAsyncThunk<
 
       return response;
     } catch (error) {
-      console.error('Error registering student:', error);
-      return rejectWithValue('Registration failed. Please try again.'); // เพิ่มข้อความผิดพลาด
+      const message = error.response?.data?.message || 'Registration failed.';
+      const code = error.response?.status || 500;
+
+      return rejectWithValue(message);
     }
   },
 );

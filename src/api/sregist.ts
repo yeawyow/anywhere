@@ -43,7 +43,6 @@ export const getProvince = async () => {
     const response = await api.get(`${API_GET.PROVINCE}`, {
       withCredentials: true,
     });
-    console.log(response.data);
     return response.data.message;
   } catch (error) {
     throw error;

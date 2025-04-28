@@ -224,7 +224,6 @@ const StudentRegister = ({ onClose }: Props) => {
       prefix_id: undefined,
       nationality_id: undefined,
       ethnicity_id: undefined,
-      enrollment_year: undefined,
       religion_id: 1,
     },
   });
@@ -312,94 +311,98 @@ const StudentRegister = ({ onClose }: Props) => {
 
   return (
     <>
-      <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
-        <h4 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-          ข้อมูลส่วนตัว
-        </h4>
-        <div className="grid grid-cols-[200px,auto,auto] gap-4 m-4">
-          <div>
-            <label className="block text-gray-600">คำนำหน้า</label>
-            <Controller
-              name="prefix_id"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={prefixes}
-                  value={selectedPrefix || { id: '', prefix_name: '' }} // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                  onChange={(selectedPrefix: any) =>
-                    onChangePrefix(selectedPrefix, field)
-                  } // เรียกใช้งาน onChangePrefix
-                  label={selectedPrefix ? '' : 'กรุณาเลือกคำนำหน้า'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                  valueKey="id"
-                  displayKey="prefix_name"
+      <div className="space-y-8">
+        <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
+          <section className="p-6 border rounded-lg shadow-sm mb-5">
+            <h2 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+              ข้อมูลส่วนตัว
+            </h2>
+            <div className="grid grid-cols-[200px,auto,auto] gap-4 m-4">
+              <div>
+                <label className="block text-gray-600">คำนำหน้า</label>
+                <Controller
+                  name="prefix_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={prefixes}
+                      value={selectedPrefix || { id: '', prefix_name: '' }} // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedPrefix: any) =>
+                        onChangePrefix(selectedPrefix, field)
+                      } // เรียกใช้งาน onChangePrefix
+                      label={selectedPrefix ? '' : 'กรุณาเลือกคำนำหน้า'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="prefix_name"
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.prefix_id && (
-              <p className="text-red-500 text-sm">{errors.prefix_id.message}</p>
-            )}
-          </div>
+                {errors.prefix_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.prefix_id.message}
+                  </p>
+                )}
+              </div>
 
-          {/* ชื่อ-สกุล (อังกฤษ) */}
+              {/* ชื่อ-สกุล (อังกฤษ) */}
 
-          <InputField
-            label="ชื่อ (ไทย)"
-            name="first_name_thai"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
-          />
+              <InputField
+                label="ชื่อ (ไทย)"
+                name="first_name_thai"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
+              />
 
-          <InputField
-            label="ชื่อ (ไทย)"
-            name="last_name_thai"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
-          />
-        </div>
-        <div className="grid grid-cols-4 gap-4 m-4">
-          <InputField
-            label="ชื่อ (อังกฤษ)"
-            name="first_name_english"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
-          />
-          <InputField
-            label="นามสกุล (อังกฤษ)"
-            name="last_name_english"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
-          />
-          <InputField
-            label="เลขบัตรประชาชน"
-            name="national_id"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
-          />
-          <InputField
-            label="เบอร์โทร"
-            name="phone_number"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
-          />
-        </div>
-        <div className="grid grid-cols-[400px,auto,auto,auto] gap-4 m-4">
-          {/* เลือกวันเดือนปีเกิด */}
-          <div>
-            <label className="block text-gray-600">วันเดือนปีเกิด</label>
-            <BirthDatePicker onAgeChange={handleAgeChange} />
-            {/* ฟิลด์ birthdate ที่ซ่อน */}
-            <input
-              type="hidden"
-              {...register('date_of_birth')} // ผูกกับฟิลด์ birthdate
-            />
-          </div>
-          {/* 
+              <InputField
+                label="ชื่อ (ไทย)"
+                name="last_name_thai"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
+              />
+            </div>
+            <div className="grid grid-cols-4 gap-4 m-4">
+              <InputField
+                label="ชื่อ (อังกฤษ)"
+                name="first_name_english"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
+              />
+              <InputField
+                label="นามสกุล (อังกฤษ)"
+                name="last_name_english"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
+              />
+              <InputField
+                label="เลขบัตรประชาชน"
+                name="national_id"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
+              />
+              <InputField
+                label="เบอร์โทร"
+                name="phone_number"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
+              />
+            </div>
+            <div className="grid grid-cols-[400px,auto,auto,auto] gap-4 m-4">
+              {/* เลือกวันเดือนปีเกิด */}
+              <div>
+                <label className="block text-gray-600">วันเดือนปีเกิด</label>
+                <BirthDatePicker onAgeChange={handleAgeChange} />
+                {/* ฟิลด์ birthdate ที่ซ่อน */}
+                <input
+                  type="hidden"
+                  {...register('date_of_birth')} // ผูกกับฟิลด์ birthdate
+                />
+              </div>
+              {/* 
           <InputField
             label=""
             name="age"
@@ -410,535 +413,541 @@ const StudentRegister = ({ onClose }: Props) => {
             readOnly={true} // ตั้งค่า readOnly เพื่อไม่ให้สามารถแก้ไขค่าเพศโดยตรง
           /> */}
 
-          <div>
-            <label className="block text-gray-600">สัญชาติ</label>
-            <Controller
-              name="nationality_id"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={nationality}
-                  value={
-                    selectedNationality || {
-                      id: '',
-                      national_name_thai: '',
-                    }
-                  } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                  onChange={(selectedNationality: any) => {
-                    setSelectedNationality(selectedNationality);
-                    field.onChange(selectedNationality.id);
-                  }}
-                  label={selectedNationality ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                  valueKey="id"
-                  displayKey="national_name_thai"
+              <div>
+                <label className="block text-gray-600">สัญชาติ</label>
+                <Controller
+                  name="nationality_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={nationality}
+                      value={
+                        selectedNationality || {
+                          id: '',
+                          national_name_thai: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedNationality: any) => {
+                        setSelectedNationality(selectedNationality);
+                        field.onChange(selectedNationality.id);
+                      }}
+                      label={selectedNationality ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="national_name_thai"
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.nationality_id && (
-              <p className="text-red-500 text-sm">
-                {errors.nationality_id.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label className="block text-gray-600">เชื้อชาติ</label>
-            <Controller
-              name="ethnicity_id"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={ethnicity}
-                  value={
-                    selectedEthnicity || { id: '', ethnicity_name_thai: '' }
-                  } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                  onChange={(selectedEthnicity: any) => {
-                    setselectedEthnicity(selectedEthnicity);
-                    field.onChange(selectedEthnicity.id);
-                  }}
-                  label={selectedEthnicity ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                  valueKey="id"
-                  displayKey="ethnicity_name_thai"
+                {errors.nationality_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.nationality_id.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-gray-600">เชื้อชาติ</label>
+                <Controller
+                  name="ethnicity_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={ethnicity}
+                      value={
+                        selectedEthnicity || { id: '', ethnicity_name_thai: '' }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedEthnicity: any) => {
+                        setselectedEthnicity(selectedEthnicity);
+                        field.onChange(selectedEthnicity.id);
+                      }}
+                      label={selectedEthnicity ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="ethnicity_name_thai"
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.ethnicity_id && (
-              <p className="text-red-500 text-sm">
-                {errors.ethnicity_id.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label className="block text-gray-600">ศาสนา</label>
-            <Controller
-              name="religion_id"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={region}
-                  value={
-                    selectedRegion || {
-                      id: '',
-                      region_name_thai: '',
-                    }
-                  } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                  onChange={(selectedRegion: any) => {
-                    setSelectedRegion(selectedRegion);
-                    field.onChange(selectedRegion.id);
-                  }}
-                  label={selectedRegion ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                  valueKey="id"
-                  displayKey="region_name_thai"
+                {errors.ethnicity_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.ethnicity_id.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-gray-600">ศาสนา</label>
+                <Controller
+                  name="religion_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={region}
+                      value={
+                        selectedRegion || {
+                          id: '',
+                          region_name_thai: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedRegion: any) => {
+                        setSelectedRegion(selectedRegion);
+                        field.onChange(selectedRegion.id);
+                      }}
+                      label={selectedRegion ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="region_name_thai"
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.religion_id && (
-              <p className="text-red-500 text-sm">
-                {errors.religion_id.message}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="grid grid-cols-1 gap-4 m-4 ">
-          <div>
-            <label className="block text-gray-600">ที่อยู่</label>
-            <ThaiAddressSelect register={register} setValue={setValue} />
-          </div>
-          <InputField
-            type="hidden"
-            label=""
-            name="gender_id"
-            register={register}
-            errors={errors}
-          />
-        </div>
-        <h4 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-          ข้อมูลนักศึกษา
-        </h4>
-        <div className="grid grid-cols-5 gap-4 m-4">
-          <InputField
-            label="รหัสนักศึกษา"
-            name="student_code"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอกรหัสนักศึกษา' }} // เพิ่ม validation
-          />
-          <InputField
-            label="อีเมลล์"
-            name="email"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอกอีเมลล์' }} // เพิ่ม validation
-          />
-          <DatePickerOne
-            label="วันที่เข้าศึกษา"
-            name="enrollment_date"
-            register={register}
-            errors={errors}
-            validation={{ required: 'กรุณากรอกเลือกวันที่' }}
-          />
-          <div>
-            <label className="block text-gray-600">ปีการศึกษา</label>
-            <Controller
-              name="enrollment_year"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={enrollment_year}
-                  value={
-                    selectedEnrollment_year || {
-                      id: '',
-                      enrollment_year_name: '',
-                    }
-                  } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                  onChange={(selectedEnrollment_year: any) => {
-                    SetselectedEnrollment_year(selectedEnrollment_year);
-                    field.onChange(selectedEnrollment_year.id);
-                  }}
-                  label={selectedEnrollment_year ? '' : 'เลือกปีการศึกษา'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                  valueKey="id"
-                  displayKey="enrollment_year_name"
+                {errors.religion_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.religion_id.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4 m-4 ">
+              <div>
+                <label className="block text-gray-600">ที่อยู่</label>
+                <ThaiAddressSelect register={register} setValue={setValue} />
+              </div>
+              <InputField
+                type="hidden"
+                label=""
+                name="gender_id"
+                register={register}
+                errors={errors}
+              />
+            </div>
+          </section>
+          <section className="p-6 border rounded-lg shadow-sm mb-5">
+            <h2 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+              ข้อมูลนักศึกษา
+            </h2>
+            <div className="grid grid-cols-5 gap-4 m-4">
+              <InputField
+                label="รหัสนักศึกษา"
+                name="student_code"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกรหัสนักศึกษา' }} // เพิ่ม validation
+              />
+              <InputField
+                label="อีเมลล์"
+                name="email"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกอีเมลล์' }} // เพิ่ม validation
+              />
+              <DatePickerOne
+                label="วันที่เข้าศึกษา"
+                name="enrollment_date"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกเลือกวันที่' }}
+              />
+              <div>
+                <label className="block text-gray-600">ปีการศึกษา</label>
+                <Controller
+                  name="enrollment_year"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={enrollment_year}
+                      value={
+                        selectedEnrollment_year || {
+                          id: '',
+                          enrollment_year_name: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedEnrollment_year: any) => {
+                        SetselectedEnrollment_year(selectedEnrollment_year);
+                        field.onChange(selectedEnrollment_year.id);
+                      }}
+                      label={selectedEnrollment_year ? '' : 'เลือกปีการศึกษา'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="enrollment_year_name"
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.enrollment_year && (
-              <p className="text-red-500 text-sm">
-                {errors.enrollment_year.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label className="block text-gray-600">ภาคเรียน</label>
-            <Controller
-              name="enrollment_term_id"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={enrollmentTerm}
-                  value={
-                    selectedEnrollmentTerm || {
-                      id: '',
-                      enrollment_term_name: '',
-                    }
-                  } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                  onChange={(selectedEnrollmentTerm: any) => {
-                    SetselectedEnrollment_year(selectedEnrollmentTerm);
-                    field.onChange(selectedEnrollmentTerm.id);
-                  }}
-                  label={selectedEnrollmentTerm ? '' : 'เลือกภาคเรียน'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                  valueKey="id"
-                  displayKey="enrollment_term_name"
+                {errors.enrollment_year && (
+                  <p className="text-red-500 text-sm">
+                    {errors.enrollment_year.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-gray-600">ภาคเรียน</label>
+                <Controller
+                  name="enrollment_term_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={enrollmentTerm}
+                      value={
+                        selectedEnrollmentTerm || {
+                          id: '',
+                          enrollment_term_name: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedEnrollmentTerm: any) => {
+                        SetselectedEnrollment_year(selectedEnrollmentTerm);
+                        field.onChange(selectedEnrollmentTerm.id);
+                      }}
+                      label={selectedEnrollmentTerm ? '' : 'เลือกภาคเรียน'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="enrollment_term_name"
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.enrollment_term_id && (
-              <p className="text-red-500 text-sm">
-                {errors.enrollment_term_id.message}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="grid grid-cols-4 gap-4 m-4">
-          <div>
-            <label className="block text-gray-600">จบจาก</label>
-            <Controller
-              name="educational_institution_id"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  options={EducationalI}
-                  value={
-                    selectedEducationalI || {
-                      id: '',
-                      educational_institution_name: '',
-                    }
-                  } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                  onChange={(selectedEducationalI: any) => {
-                    setselectedEducationalI(selectedEducationalI);
-                    field.onChange(selectedEducationalI.id);
-                  }}
-                  label={selectedEducationalI ? '' : 'เลือกโรงเรียนที่จบ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                  valueKey="id"
-                  displayKey="educational_institution_name"
+                {errors.enrollment_term_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.enrollment_term_id.message}
+                  </p>
+                )}
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-4 m-4">
+              <div>
+                <label className="block text-gray-600">จบจาก</label>
+                <Controller
+                  name="educational_institution_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={EducationalI}
+                      value={
+                        selectedEducationalI || {
+                          id: '',
+                          educational_institution_name: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedEducationalI: any) => {
+                        setselectedEducationalI(selectedEducationalI);
+                        field.onChange(selectedEducationalI.id);
+                      }}
+                      label={selectedEducationalI ? '' : 'เลือกโรงเรียนที่จบ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="educational_institution_name"
+                    />
+                  )}
                 />
-              )}
-            />
-            {errors.educational_institution_id && (
-              <p className="text-red-500 text-sm">
-                {errors.educational_institution_id.message}
-              </p>
-            )}
-          </div>
-        </div>
+                {errors.educational_institution_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.educational_institution_id.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </section>
+          <section className="p-6 border rounded-lg shadow-sm mb-5">
+            <h4 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+              ข้อมูลบิดา
+            </h4>
+            <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
+              <div>
+                <label className="block text-gray-600">คำนำหน้า</label>
+                <Controller
+                  name="father_prefix_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={prefixes}
+                      value={
+                        selectedFatherPrefix || { id: '', prefix_name: '' }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedFatherPrefix: any) => {
+                        setSelectedFatherPrefix(selectedFatherPrefix);
+                        field.onChange(selectedFatherPrefix.id);
+                      }}
+                      label={selectedFatherPrefix ? '' : 'กรุณาเลือกคำนำหน้า'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="prefix_name"
+                    />
+                  )}
+                />
+                {errors.father_prefix_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.father_prefix_id.message}
+                  </p>
+                )}
+              </div>
 
-        <div className="bg-cyan-500 m-4 py-2 rounded-md">
-          <h4 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-            ข้อมูลบิดา
-          </h4>
-          <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
-            <div>
-              <label className="block text-gray-600">คำนำหน้า</label>
-              <Controller
-                name="father_prefix_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={prefixes}
-                    value={selectedFatherPrefix || { id: '', prefix_name: '' }} // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedFatherPrefix: any) => {
-                      setSelectedFatherPrefix(selectedFatherPrefix);
-                      field.onChange(selectedFatherPrefix.id);
-                    }}
-                    label={selectedFatherPrefix ? '' : 'กรุณาเลือกคำนำหน้า'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="prefix_name"
-                  />
-                )}
+              {/* ชื่อ-สกุล (อังกฤษ) */}
+
+              <InputField
+                label="ชื่อบิดา"
+                name="father_first_name_thai"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
               />
-              {errors.father_prefix_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.father_prefix_id.message}
-                </p>
-              )}
+
+              <InputField
+                label="นามสกุล"
+                name="father_last_name_thai"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
+              />
+              <InputField
+                label="เลขบัตรประชาชน"
+                name="father_national_id"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
+              />
+              <div>
+                <label className="block text-gray-600">สถานภาพ</label>
+                <Controller
+                  name="father_marital_status_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={marital}
+                      value={
+                        selectedFatherMarital || {
+                          id: '',
+                          marital_status_name: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedFatherMarital: any) => {
+                        setselectedFatherMarital(selectedFatherMarital);
+                        field.onChange(selectedFatherMarital.id);
+                      }}
+                      label={selectedFatherMarital ? '' : 'กรุณาเลือกสถาณภาพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="marital_status_name"
+                    />
+                  )}
+                />
+                {errors.father_marital_status_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.father_marital_status_id.message}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* ชื่อ-สกุล (อังกฤษ) */}
+            <div className="grid grid-cols-[200px,auto,auto,auto] gap-4 m-4">
+              <div>
+                <label className="block text-gray-600">อาชีพ</label>
+                <Controller
+                  name="mother_occupation_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={occupat}
+                      value={selectedOccupat || { id: '', occupation_name: '' }} // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedOccupat: any) => {
+                        setselectedOccupat(selectedOccupat);
+                        field.onChange(selectedOccupat.id);
+                      }}
+                      label={selectedOccupat ? '' : 'กรุณาเลือกอาชีพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="occupation_name"
+                    />
+                  )}
+                />
+                {errors.father_occupation_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.father_occupation_id.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-gray-600">สัญชาติ</label>
+                <Controller
+                  name="father_nationality_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={nationality}
+                      value={
+                        selectedFatherNation || {
+                          id: '',
+                          national_name_thai: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedFatherNation: any) => {
+                        setselectedFatherNation(selectedFatherNation);
+                        field.onChange(selectedFatherNation.id);
+                      }}
+                      label={selectedFatherNation ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="national_name_thai"
+                    />
+                  )}
+                />
+                {errors.father_nationality_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.father_nationality_id.message}
+                  </p>
+                )}
+              </div>
+              <InputField
+                label="เบอร์โทร"
+                name="father_phone_number"
+                register={register}
+                errors={errors}
+                // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
+              />
+            </div>
+          </section>
+          <section className="p-6 border rounded-lg shadow-sm mb-5">
+            <h4 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+              ข้อมูลมารดา
+            </h4>
+            <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
+              <div>
+                <label className="block text-gray-600">คำนำหน้า</label>
+                <Controller
+                  name="mother_prefix_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={prefixes}
+                      value={
+                        selectedMatherPrefix || { id: '', prefix_name: '' }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedMatherPrefix: any) => {
+                        setselectedMatherPrefix(selectedMatherPrefix);
+                        field.onChange(selectedMatherPrefix.id);
+                      }}
+                      label={selectedMatherPrefix ? '' : 'กรุณาเลือกคำนำหน้า'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="prefix_name"
+                    />
+                  )}
+                />
+                {errors.mother_prefix_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.mother_prefix_id.message}
+                  </p>
+                )}
+              </div>
+              {/* ชื่อ-สกุล (อังกฤษ) */}
 
-            <InputField
-              label="ชื่อบิดา"
-              name="father_first_name_thai"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
-            />
+              <InputField
+                label="ชื่อมารดา"
+                name="mother_first_name_thai"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
+              />
 
-            <InputField
-              label="นามสกุล"
-              name="father_last_name_thai"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
-            />
-            <InputField
-              label="เลขบัตรประชาชน"
-              name="father_national_id"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
-            />
-            <div>
-              <label className="block text-gray-600">สถานภาพ</label>
-              <Controller
-                name="father_marital_status_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={marital}
-                    value={
-                      selectedFatherMarital || {
-                        id: '',
-                        marital_status_name: '',
-                      }
-                    } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedFatherMarital: any) => {
-                      setselectedFatherMarital(selectedFatherMarital);
-                      field.onChange(selectedFatherMarital.id);
-                    }}
-                    label={selectedFatherMarital ? '' : 'กรุณาเลือกสถาณภาพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="marital_status_name"
-                  />
-                )}
+              <InputField
+                label="นามสกุล"
+                name="mother_last_name_thai"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
               />
-              {errors.father_marital_status_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.father_marital_status_id.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-[200px,auto,auto,auto] gap-4 m-4">
-            <div>
-              <label className="block text-gray-600">อาชีพ</label>
-              <Controller
-                name="mother_occupation_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={occupat}
-                    value={selectedOccupat || { id: '', occupation_name: '' }} // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedOccupat: any) => {
-                      setselectedOccupat(selectedOccupat);
-                      field.onChange(selectedOccupat.id);
-                    }}
-                    label={selectedOccupat ? '' : 'กรุณาเลือกอาชีพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="occupation_name"
-                  />
-                )}
+              <InputField
+                label="เลขบัตรประชาชน"
+                name="mother_national_id"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
               />
-              {errors.father_occupation_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.father_occupation_id.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-gray-600">สัญชาติ</label>
-              <Controller
-                name="father_nationality_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={nationality}
-                    value={
-                      selectedFatherNation || {
-                        id: '',
-                        national_name_thai: '',
-                      }
-                    } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedFatherNation: any) => {
-                      setselectedFatherNation(selectedFatherNation);
-                      field.onChange(selectedFatherNation.id);
-                    }}
-                    label={selectedFatherNation ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="national_name_thai"
-                  />
+              <div>
+                <label className="block text-gray-600">สถานภาพ</label>
+                <Controller
+                  name="mother_marital_status_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={marital}
+                      value={
+                        selectedMotherMarital || {
+                          id: '',
+                          marital_status_name: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedMotherMarital: any) => {
+                        setselectedMotherMarital(selectedMotherMarital);
+                        field.onChange(selectedMotherMarital.id);
+                      }}
+                      label={selectedMotherMarital ? '' : 'กรุณาเลือกสถาณภาพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="marital_status_name"
+                    />
+                  )}
+                />
+                {errors.mother_marital_status_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.mother_marital_status_id.message}
+                  </p>
                 )}
-              />
-              {errors.father_nationality_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.father_nationality_id.message}
-                </p>
-              )}
+              </div>
             </div>
-            <InputField
-              label="เบอร์โทร"
-              name="father_phone_number"
-              register={register}
-              errors={errors}
-              // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
-            />
-          </div>
-        </div>
-        <div className="bg-slate-600 m-4 py-2 rounded-md">
-          <h4 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-            ข้อมูลมารดา
-          </h4>
-          <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
-            <div>
-              <label className="block text-gray-600">คำนำหน้า</label>
-              <Controller
-                name="mother_prefix_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={prefixes}
-                    value={selectedMatherPrefix || { id: '', prefix_name: '' }} // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedMatherPrefix: any) => {
-                      setselectedMatherPrefix(selectedMatherPrefix);
-                      field.onChange(selectedMatherPrefix.id);
-                    }}
-                    label={selectedMatherPrefix ? '' : 'กรุณาเลือกคำนำหน้า'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="prefix_name"
-                  />
+            <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
+              <div>
+                <label className="block text-gray-600">อาชีพ</label>
+                <Controller
+                  name="mother_occupation_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={occupat}
+                      value={
+                        selectedMotherOccupat || { id: '', occupation_name: '' }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedMotherOccupat: any) => {
+                        setselectedMotherOccupat(selectedMotherOccupat);
+                        field.onChange(selectedMotherOccupat.id);
+                      }}
+                      label={selectedMotherOccupat ? '' : 'กรุณาเลือกอาชีพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="occupation_name"
+                    />
+                  )}
+                />
+                {errors.mother_occupation_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.mother_occupation_id.message}
+                  </p>
                 )}
-              />
-              {errors.mother_prefix_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.mother_prefix_id.message}
-                </p>
-              )}
-            </div>
-            {/* ชื่อ-สกุล (อังกฤษ) */}
-
-            <InputField
-              label="ชื่อมารดา"
-              name="mother_first_name_thai"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
-            />
-
-            <InputField
-              label="นามสกุล"
-              name="mother_last_name_thai"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
-            />
-            <InputField
-              label="เลขบัตรประชาชน"
-              name="mother_national_id"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
-            />
-            <div>
-              <label className="block text-gray-600">สถานภาพ</label>
-              <Controller
-                name="mother_marital_status_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={marital}
-                    value={
-                      selectedMotherMarital || {
-                        id: '',
-                        marital_status_name: '',
-                      }
-                    } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedMotherMarital: any) => {
-                      setselectedMotherMarital(selectedMotherMarital);
-                      field.onChange(selectedMotherMarital.id);
-                    }}
-                    label={selectedMotherMarital ? '' : 'กรุณาเลือกสถาณภาพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="marital_status_name"
-                  />
+              </div>
+              <div>
+                <label className="block text-gray-600">สัญชาติ</label>
+                <Controller
+                  name="mother_nationality_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={nationality}
+                      value={
+                        selectedFatherNation || {
+                          id: '',
+                          national_name_thai: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedFatherNation: any) => {
+                        setselectedFatherNation(selectedFatherNation);
+                        field.onChange(selectedFatherNation.id);
+                      }}
+                      label={selectedFatherNation ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="national_name_thai"
+                    />
+                  )}
+                />
+                {errors.mother_nationality_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.mother_nationality_id.message}
+                  </p>
                 )}
+              </div>
+              <InputField
+                label="เบอร์โทร"
+                name="mother_phone_number"
+                register={register}
+                errors={errors}
+                // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
               />
-              {errors.mother_marital_status_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.mother_marital_status_id.message}
-                </p>
-              )}
             </div>
-          </div>
-          <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
-            <div>
-              <label className="block text-gray-600">อาชีพ</label>
-              <Controller
-                name="mother_occupation_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={occupat}
-                    value={
-                      selectedMotherOccupat || { id: '', occupation_name: '' }
-                    } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedMotherOccupat: any) => {
-                      setselectedMotherOccupat(selectedMotherOccupat);
-                      field.onChange(selectedMotherOccupat.id);
-                    }}
-                    label={selectedMotherOccupat ? '' : 'กรุณาเลือกอาชีพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="occupation_name"
-                  />
-                )}
-              />
-              {errors.mother_occupation_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.mother_occupation_id.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-gray-600">สัญชาติ</label>
-              <Controller
-                name="mother_nationality_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={nationality}
-                    value={
-                      selectedFatherNation || {
-                        id: '',
-                        national_name_thai: '',
-                      }
-                    } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedFatherNation: any) => {
-                      setselectedFatherNation(selectedFatherNation);
-                      field.onChange(selectedFatherNation.id);
-                    }}
-                    label={selectedFatherNation ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="national_name_thai"
-                  />
-                )}
-              />
-              {errors.mother_nationality_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.mother_nationality_id.message}
-                </p>
-              )}
-            </div>
-            <InputField
-              label="เบอร์โทร"
-              name="mother_phone_number"
-              register={register}
-              errors={errors}
-              // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
-            />
-          </div>
-        </div>
-        <div className="bg-slate-600 m-4 py-2 rounded-md">
-          <h4 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
-            ข้อมูลผู้ปกครอง
-          </h4>
-          {/* <Radio
+          </section>
+          <section className="p-6 border rounded-lg shadow-sm mb-5">
+            <h4 className="text-lg px-4 font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+              ข้อมูลผู้ปกครอง
+            </h4>
+            {/* <Radio
             id="gender-female"
             name="gender"
             value="female"
@@ -963,167 +972,172 @@ const StudentRegister = ({ onClose }: Props) => {
             checked={selectedGender === 'male'}
             onChange={(value) => setSelectedGender(value)}
           /> */}
-          <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
-            <div>
-              <label className="block text-gray-600">คำนำหน้า</label>
-              <Controller
-                name="guardian_prefix_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={prefixes}
-                    value={
-                      selectedGuardianPrefix || { id: '', prefix_name: '' }
-                    } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedGuardianPrefix: any) => {
-                      setselectedGuardianPrefix(selectedGuardianPrefix);
-                      field.onChange(selectedGuardianPrefix.id);
-                    }}
-                    label={selectedGuardianPrefix ? '' : 'กรุณาเลือกคำนำหน้า'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="prefix_name"
-                  />
+            <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
+              <div>
+                <label className="block text-gray-600">คำนำหน้า</label>
+                <Controller
+                  name="guardian_prefix_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={prefixes}
+                      value={
+                        selectedGuardianPrefix || { id: '', prefix_name: '' }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedGuardianPrefix: any) => {
+                        setselectedGuardianPrefix(selectedGuardianPrefix);
+                        field.onChange(selectedGuardianPrefix.id);
+                      }}
+                      label={selectedGuardianPrefix ? '' : 'กรุณาเลือกคำนำหน้า'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="prefix_name"
+                    />
+                  )}
+                />
+                {errors.guardian_prefix_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.guardian_prefix_id.message}
+                  </p>
                 )}
-              />
-              {errors.guardian_prefix_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.guardian_prefix_id.message}
-                </p>
-              )}
-            </div>
-            {/* ชื่อ-สกุล (อังกฤษ) */}
+              </div>
+              {/* ชื่อ-สกุล (อังกฤษ) */}
 
-            <InputField
-              label="ชื่อ"
-              name="guardian_first_name_thai"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
-            />
+              <InputField
+                label="ชื่อ"
+                name="guardian_first_name_thai"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
+              />
 
-            <InputField
-              label="นามสกุล"
-              name="guardian_last_name_thai"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
-            />
-            <InputField
-              label="เลขบัตรประชาชน"
-              name="guardian_national_id"
-              register={register}
-              errors={errors}
-              validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
-            />
-            <div>
-              <label className="block text-gray-600">เกี่ยวข้องเป็น</label>
-              <Controller
-                name="guardian_relation_to_student_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={guardian}
-                    value={selectedGuardian || { id: '', relation_name: '' }} // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedGuardian: any) => {
-                      setselectedGuardian(selectedGuardian);
-                      field.onChange(selectedGuardian.id);
-                    }}
-                    label={selectedGuardian ? '' : 'กรุณาเลือกสถาณภาพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="relation_name"
-                  />
-                )}
+              <InputField
+                label="นามสกุล"
+                name="guardian_last_name_thai"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
               />
-              {errors.mother_marital_status_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.mother_marital_status_id.message}
-                </p>
-              )}
-            </div>
-          </div>
-          <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
-            <div>
-              <label className="block text-gray-600">อาชีพ</label>
-              <Controller
-                name="guardian_occupation_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={occupat}
-                    value={
-                      selectedGuardianOccupation || {
-                        id: '',
-                        occupation_name: '',
-                      }
-                    } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedGuardianOccupation: any) => {
-                      setselectedGuardianOccupation(selectedGuardianOccupation);
-                      field.onChange(selectedGuardianOccupation.id);
-                    }}
-                    label={selectedGuardianOccupation ? '' : 'กรุณาเลือกอาชีพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="occupation_name"
-                  />
-                )}
+              <InputField
+                label="เลขบัตรประชาชน"
+                name="guardian_national_id"
+                register={register}
+                errors={errors}
+                validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
               />
-              {errors.guardian_occupation_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.guardian_occupation_id.message}
-                </p>
-              )}
-            </div>
-            <div>
-              <label className="block text-gray-600">สัญชาติ</label>
-              <Controller
-                name="guardian_nationality_id"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    options={nationality}
-                    value={
-                      selectedguardianNation || {
-                        id: '',
-                        national_name_thai: '',
-                      }
-                    } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
-                    onChange={(selectedguardianNation: any) => {
-                      setselectedguardianNation(selectedguardianNation);
-                      field.onChange(selectedguardianNation.id);
-                    }}
-                    label={selectedguardianNation ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
-                    valueKey="id"
-                    displayKey="national_name_thai"
-                  />
+              <div>
+                <label className="block text-gray-600">เกี่ยวข้องเป็น</label>
+                <Controller
+                  name="guardian_relation_to_student_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={guardian}
+                      value={selectedGuardian || { id: '', relation_name: '' }} // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedGuardian: any) => {
+                        setselectedGuardian(selectedGuardian);
+                        field.onChange(selectedGuardian.id);
+                      }}
+                      label={selectedGuardian ? '' : 'กรุณาเลือกสถาณภาพ'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="relation_name"
+                    />
+                  )}
+                />
+                {errors.mother_marital_status_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.mother_marital_status_id.message}
+                  </p>
                 )}
-              />
-              {errors.guardian_nationality_id && (
-                <p className="text-red-500 text-sm">
-                  {errors.guardian_nationality_id.message}
-                </p>
-              )}
+              </div>
             </div>
-            <InputField
-              label="เบอร์โทร"
-              name="guardian_phone_number"
-              register={register}
-              errors={errors}
-              // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
-            />
-          </div>
-          {/* <div>
+            <div className="grid grid-cols-[200px,auto,auto,auto,auto] gap-4 m-4">
+              <div>
+                <label className="block text-gray-600">อาชีพ</label>
+                <Controller
+                  name="guardian_occupation_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={occupat}
+                      value={
+                        selectedGuardianOccupation || {
+                          id: '',
+                          occupation_name: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedGuardianOccupation: any) => {
+                        setselectedGuardianOccupation(
+                          selectedGuardianOccupation,
+                        );
+                        field.onChange(selectedGuardianOccupation.id);
+                      }}
+                      label={
+                        selectedGuardianOccupation ? '' : 'กรุณาเลือกอาชีพ'
+                      } // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="occupation_name"
+                    />
+                  )}
+                />
+                {errors.guardian_occupation_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.guardian_occupation_id.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="block text-gray-600">สัญชาติ</label>
+                <Controller
+                  name="guardian_nationality_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      options={nationality}
+                      value={
+                        selectedguardianNation || {
+                          id: '',
+                          national_name_thai: '',
+                        }
+                      } // ถ้ายังไม่ได้เลือก ให้เป็นค่าว่าง
+                      onChange={(selectedguardianNation: any) => {
+                        setselectedguardianNation(selectedguardianNation);
+                        field.onChange(selectedguardianNation.id);
+                      }}
+                      label={selectedguardianNation ? '' : ''} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      valueKey="id"
+                      displayKey="national_name_thai"
+                    />
+                  )}
+                />
+                {errors.guardian_nationality_id && (
+                  <p className="text-red-500 text-sm">
+                    {errors.guardian_nationality_id.message}
+                  </p>
+                )}
+              </div>
+              <InputField
+                label="เบอร์โทร"
+                name="guardian_phone_number"
+                register={register}
+                errors={errors}
+                // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
+              />
+            </div>
+            {/* <div>
             <label className="block text-gray-600">ที่อยู่</label>
             <ThaiAddressSelect register={register} setValue={setValue} />
           </div> */}
-        </div>
-        <button
-          type="submit"
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? 'กำลังสั่งข้อมูล ' : 'ลงทะเบียน'}
-        </button>
-      </form>
+          </section>
+          <button
+            type="submit"
+            onSubmit={handleSubmit(onSubmit)}
+            className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'กำลังสั่งข้อมูล ' : 'ลงทะเบียน'}
+          </button>
+        </form>
+      </div>
     </>
   );
 };
