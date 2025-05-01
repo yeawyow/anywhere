@@ -44,25 +44,17 @@ export const fetchStudentData = createAsyncThunk<Student[], void>(
 // สร้าง AsyncThunk สำหรับการลงทะเบียนนักเรียน
 export const registerStudent = createAsyncThunk<
   Student,
-  Partial<Student>, // เปลี่ยนเป็น Partial<Student> เพื่อรองรับข้อมูลที่ไม่ครบถ้วน
+  FormData,
   { rejectValue: string }
->(
-  'student/register',
-  async (studentData: Partial<Student>, { rejectWithValue }) => {
-    try {
-      console.log(studentData);
-      const response = await registerStudentApi(studentData);
-
-      return response;
-    } catch (error) {
-      const message = error.response?.data?.message || 'Registration failed.';
-      const code = error.response?.status || 500;
-
-      return rejectWithValue(message);
-    }
-  },
-);
-
+>('student/register', async (formData, { rejectWithValue }) => {
+  try {
+    const response = await registerStudentApi(formData);
+    return response;
+  } catch (error: any) {
+    const message = error.response?.data?.message || 'Registration failed.';
+    return rejectWithValue(message);
+  }
+});
 const initialState: StudentState = {
   studentList: [],
   selectedStudent: null,

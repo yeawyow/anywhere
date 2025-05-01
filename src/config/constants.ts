@@ -17,6 +17,7 @@ export const API_GET = {
   DISTRICT: '/getDistrictByProvinceId/',
   SUBDISTRICTS: '/getSubDistrictByDistrictId/',
   POSITION: '/getPosition',
+  CHECK_UNIQ:'/checkUniqueStudent',
   USERS: '/',
 };
 

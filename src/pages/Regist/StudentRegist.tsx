@@ -37,7 +37,9 @@ export default function StudentRegist() {
 
         <div className="space-y-6">
           {status === 'loading' && <p>กำลังโหลดข้อมูล...</p>}
-          {status === 'failed' && <p className="text-red-500">{error}</p>}
+          {status === 'failed' && (
+            <p className="text-red-500">ไม่มีข้อมูลนักศึกษา</p>
+          )}
 
           {status === 'succeeded' && student.length > 0 ? (
             <TableStudent />

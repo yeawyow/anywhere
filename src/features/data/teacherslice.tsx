@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { getTeachers, registerTecherApi } from '../../api/tregist';
+import {
+  getTeachers,
+  registerTecherApi,
+  // getTeacherSelect,
+} from '../../api/tregist';
 
 interface Teacher {
   id: number;
@@ -26,8 +30,8 @@ interface Teacher {
 
 interface TeacherState {
   teachersList: Teacher[];
-  selectedStudent: Teacher | null;
-  studentFormData: Partial<Teacher>;
+  selectedTeacher: Teacher | null;
+  actionMode: string;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
@@ -40,6 +44,13 @@ export const fetchTeacherData = createAsyncThunk<Teacher[], void>(
   },
 );
 
+// export const getTeacherSelect = createAsyncThunk<Teacher[], void>(
+//   'teacher/getTeacherSelect',
+//   async () => {
+//     const data = await getTeacherSelect();
+//     return data.message;
+//   },
+// );
 // สร้าง AsyncThunk สำหรับการลงทะเบียนนักเรียน
 export const registerTeacher = createAsyncThunk<
   Teacher,
@@ -62,8 +73,8 @@ export const registerTeacher = createAsyncThunk<
 
 const initialState: TeacherState = {
   teachersList: [],
-  selectedStudent: null,
-  studentFormData: {},
+  selectedTeacher: null,
+  actionMode: 'none',
   status: 'idle',
   error: null,
 };

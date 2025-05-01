@@ -13,18 +13,22 @@ export const getPrefix = async () => {
     throw error; // โยน error ออกไปให้ component ที่เรียกใช้งานจัดการ
   }
 };
-export const registerStudentApi = async (studentData: object) => {
+export const registerStudentApi = async (studentData: FormData | object) => {
   try {
+    const isFormData = studentData instanceof FormData;
+
     const response = await api.post(API_POST.REGISTER_STUDENT, studentData, {
       withCredentials: true,
+      headers: isFormData ? undefined : { 'Content-Type': 'application/json' },
     });
-    console.log('registerStudent Response:', response.data);
+
     return response.data;
   } catch (error) {
     console.error('Error registering student:', error);
     throw error;
   }
 };
+
 export const getStudent = async () => {
   try {
     const response = await api.get(`${API_GET.STUDENTS}`, {
@@ -128,6 +132,22 @@ export const getSpectial = async () => {
     const response = await api.get(`${API_GET.SPECTIAL}`);
     return response.data;
   } catch (error) {
+    throw error;
+  }
+};
+
+export const checkUniq = async (email: string) => {
+  try {
+    const response = await api.post(`${API_GET.CHECK_UNIQ}`, {
+      email: email,
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.status === 409) {
+      const msg = error.response.data?.message?.message || 'อีเมลซ้ำ';
+      console.warn(msg);
+      return { duplicated: true, message: msg }; // ส่งข้อมูลให้เรียกใช้งานต่อได้
+    }
     throw error;
   }
 };

@@ -9,6 +9,7 @@ import TableTeachers from '../../components/Tables/TableTaechers';
 import { fetchTeacherData } from '../../features/data/teacherslice';
 import { RootState, AppDispatch } from '../../app/store';
 import { useSelector, useDispatch } from 'react-redux';
+import Loader from '../../common/Loader';
 
 const TeacherRegist = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -57,7 +58,7 @@ const TeacherRegist = () => {
 
         {
           <div className="space-y-6">
-            {status === 'loading' && <p>กำลังโหลดข้อมูล...</p>}
+            {status === 'loading' && <Loader />}
             {status === 'failed' && <p className="text-red-500">{error}</p>}
             {status === 'succeeded' && teachers.length > 0 ? (
               <TableTeachers />

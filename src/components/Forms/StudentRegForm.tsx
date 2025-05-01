@@ -10,6 +10,7 @@ import {
   getMarital,
   getOccap,
   getGuardian,
+  checkUniq,
 } from '../../api/sregist';
 import BirthDatePicker from './DatePicker/BirthDatePicker';
 import DatePickerOne from './DatePicker/DatePickerOne';
@@ -23,6 +24,7 @@ import InputField from './input/InputField';
 import { getGenderFromPrefix } from '../../features/function';
 import { fetchStudentData } from '../../features/data/studentslice';
 import Radio from '../Forms/input/Radio';
+import ImageUploader from './input/ImageUploaderWithPreview';
 
 interface Prefix {
   id: number;
@@ -128,7 +130,20 @@ const schema = z.object({
   district_id: z.number().optional(),
   province_id: z.number().optional(),
   student_code: z.string().optional(),
-  email: z.string().optional(),
+  email: z
+    .string({ required_error: 'กรุณากรอกอีเมลล์' })
+    .email({ message: 'รูปแบบอีเมลไม่ถูกต้อง' })
+    .superRefine(async (email, ctx) => {
+      const result = await checkUniq(email);
+      if (result?.duplicated) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: result.message,
+          path: ['email'],
+        });
+      }
+    }),
+
   enrollment_date: z.string().optional(),
   // .regex(/^\{10}$/, { message: 'ต้องเป็นตัวเลขเท่านั้น' }),
   enrollment_year: z
@@ -205,8 +220,8 @@ const StudentRegister = ({ onClose }: Props) => {
   const [selectedGuardianOccupation, setselectedGuardianOccupation] =
     useState();
   const [selectedguardianNation, setselectedguardianNation] = useState();
-  const [selectedGender, setSelectedGender] = useState('male');
-
+  const [avatarBlob, setAvatarBlob] = useState<Blob | null>(null);
+  console.log('avata', avatarBlob);
   const handleAgeChange = (newAge: number, birthdate: string) => {
     // console.log('Age selected:', newAge); // ดูค่าที่ส่งมา
     setAge(newAge); // รับค่าจาก BirthDatePicker
@@ -220,12 +235,7 @@ const StudentRegister = ({ onClose }: Props) => {
     formState: { isSubmitting, isSubmitSuccessful, isValid, errors },
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: {
-      prefix_id: undefined,
-      nationality_id: undefined,
-      ethnicity_id: undefined,
-      religion_id: 1,
-    },
+    mode: 'onBlur',
   });
   useEffect(() => {
     const fetchPrefixAndNational = async () => {
@@ -297,18 +307,34 @@ const StudentRegister = ({ onClose }: Props) => {
 
     field.onChange(selectedPrefix.id); // อัปเดตค่าของ prefix_id ในฟอร์ม
   };
-  const onSubmit = async (data: object) => {
+
+  // ใน onSubmit:
+  const onSubmit = async (data: any) => {
     try {
-      console.log(data);
-      // ใช้ dispatch เพื่อเรียกใช้งาน AsyncThunk
-      await dispatch(registerStudent(data));
-      onClose();
-      dispatch(fetchStudentData()); // ฟังก์ชันนี้ควรใช้ในการดึงข้อมูลรายชื่อนักศึกษา
+      const formData = new FormData();
+
+      // รูปภาพ
+      if (data.profile_image instanceof File) {
+        formData.append('profile_image', data.profile_image);
+      }
+
+      // วนข้อมูลอื่น ๆ
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === 'profile_image') return; // ข้ามรูป (เราจัดการไปแล้ว)
+
+        if (typeof value === 'number' || typeof value === 'string') {
+          formData.append(key, String(value));
+        } else if (value !== undefined && value !== null) {
+          formData.append(key, JSON.stringify(value)); // สำหรับ object
+        }
+      });
+      await dispatch(registerStudent(formData));
+      onClose(); // ปิดฟอร์ม
+      dispatch(fetchStudentData()); // ดึงข้อมูลนักศึกษาหลังจากลงทะเบียน
     } catch (error) {
       console.error('Registration failed:', error);
     }
   };
-
   return (
     <>
       <div className="space-y-8">
@@ -350,7 +376,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="first_name_thai"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
               />
 
               <InputField
@@ -358,7 +383,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="last_name_thai"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
               />
             </div>
             <div className="grid grid-cols-4 gap-4 m-4">
@@ -367,28 +391,24 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="first_name_english"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
               />
               <InputField
                 label="นามสกุล (อังกฤษ)"
                 name="last_name_english"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
               />
               <InputField
                 label="เลขบัตรประชาชน"
                 name="national_id"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
               />
               <InputField
                 label="เบอร์โทร"
                 name="phone_number"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
               />
             </div>
             <div className="grid grid-cols-[400px,auto,auto,auto] gap-4 m-4">
@@ -525,22 +545,20 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="student_code"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกรหัสนักศึกษา' }} // เพิ่ม validation
               />
               <InputField
                 label="อีเมลล์"
                 name="email"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกอีเมลล์' }} // เพิ่ม validation
               />
               <DatePickerOne
                 label="วันที่เข้าศึกษา"
                 name="enrollment_date"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกเลือกวันที่' }}
               />
+
               <div>
                 <label className="block text-gray-600">ปีการศึกษา</label>
                 <Controller
@@ -633,6 +651,10 @@ const StudentRegister = ({ onClose }: Props) => {
                   </p>
                 )}
               </div>
+              <div>
+                <label className="block text-gray-600">รูปภาพนักศึกษา</label>
+                <ImageUploader onImageReady={setAvatarBlob} />
+              </div>
             </div>
           </section>
           <section className="p-6 border rounded-lg shadow-sm mb-5">
@@ -675,7 +697,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="father_first_name_thai"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
               />
 
               <InputField
@@ -683,14 +704,12 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="father_last_name_thai"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
               />
               <InputField
                 label="เลขบัตรประชาชน"
                 name="father_national_id"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
               />
               <div>
                 <label className="block text-gray-600">สถานภาพ</label>
@@ -785,7 +804,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="father_phone_number"
                 register={register}
                 errors={errors}
-                // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
               />
             </div>
           </section>
@@ -828,7 +846,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="mother_first_name_thai"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
               />
 
               <InputField
@@ -836,14 +853,12 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="mother_last_name_thai"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกนามสกุล' }} // เพิ่ม validation
               />
               <InputField
                 label="เลขบัตรประชาชน"
                 name="mother_national_id"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
               />
               <div>
                 <label className="block text-gray-600">สถานภาพ</label>
@@ -939,7 +954,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="mother_phone_number"
                 register={register}
                 errors={errors}
-                // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
               />
             </div>
           </section>
@@ -1007,7 +1021,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="guardian_first_name_thai"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอกชื่อ' }} // เพิ่ม validation
               />
 
               <InputField
@@ -1022,7 +1035,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="guardian_national_id"
                 register={register}
                 errors={errors}
-                validation={{ required: 'กรุณากรอเลขบัตร' }} // เพิ่ม validation
               />
               <div>
                 <label className="block text-gray-600">เกี่ยวข้องเป็น</label>
@@ -1120,7 +1132,6 @@ const StudentRegister = ({ onClose }: Props) => {
                 name="guardian_phone_number"
                 register={register}
                 errors={errors}
-                // validation={{ required: 'กรุณากรอกเบอร์โทร' }} // เพิ่ม validation
               />
             </div>
             {/* <div>
