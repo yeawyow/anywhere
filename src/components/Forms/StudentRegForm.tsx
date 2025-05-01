@@ -114,9 +114,19 @@ const schema = z.object({
     .regex(/^[A-Za-z\s]*$/, {
       message: 'ชื่อ(นามสกุล) ต้องใช้ตัวอักษรภาษาอังกฤษเท่านั้น',
     }), // ภาษาอังกฤษเท่านั้น
-  national_id: z.string().optional(),
-  // .length(13, { message: 'เลขบัตรประชาชนต้องมีความยาว 13 หลัก' })
-  // .regex(/^\d{13}$/, { message: 'เลขบัตรประชาชนต้องเป็นตัวเลขเท่านั้น' }),
+  national_id: z
+    .string()
+    .length(13, { message: 'เลขบัตรประชาชนต้องมีความยาว 13 หลัก' })
+    .regex(/^\d{13}$/, { message: 'เลขบัตรประชาชนต้องเป็นตัวเลขเท่านั้น' })
+    .superRefine(async (national_id, ctx) => {
+      const exists = await checkUniq('national_id', national_id);
+      if (!exists.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: exists.message,
+        });
+      }
+    }),
   nationality_id: z.number().optional(), // ทำให้ไม่บังคับกรอก
   ethnicity_id: z.number().optional(), // ทำให้ไม่บังคับกรอก
   // age: z.number().min(1, { message: 'เลือกวันเกิด' }),
@@ -129,21 +139,31 @@ const schema = z.object({
   sub_district_id: z.number().optional(),
   district_id: z.number().optional(),
   province_id: z.number().optional(),
-  student_code: z.string().optional(),
+  student_code: z
+    .string()
+    // .length(4, { message: 'รหัสไม่เกิน 4 หลัก' })
+    .regex(/^\d{4}$/, { message: 'รหัส 4เป็นตัวเลข' })
+    .superRefine(async (student_code, ctx) => {
+      const exists = await checkUniq('student_code', student_code);
+      if (!exists.success) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: exists.message,
+        });
+      }
+    }),
   email: z
     .string({ required_error: 'กรุณากรอกอีเมลล์' })
     .email({ message: 'รูปแบบอีเมลไม่ถูกต้อง' })
     .superRefine(async (email, ctx) => {
-      const result = await checkUniq(email);
-      if (result?.duplicated) {
+      const exists = await checkUniq('email', email);
+      if (!exists.success) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: result.message,
-          path: ['email'],
+          message: exists.message,
         });
       }
     }),
-
   enrollment_date: z.string().optional(),
   // .regex(/^\{10}$/, { message: 'ต้องเป็นตัวเลขเท่านั้น' }),
   enrollment_year: z
@@ -152,7 +172,6 @@ const schema = z.object({
     .min(1, { message: 'กรุณาเลือกคำนำหน้า' }), // ค่าต้องมากกว่า 0
   enrollment_term_id: z.number().optional(),
   educational_institution_id: z.number().optional(),
-
   father_prefix_id: z.number().optional(),
   father_marital_status_id: z.number().optional(),
   father_occupation_id: z.number().optional(),
@@ -236,6 +255,7 @@ const StudentRegister = ({ onClose }: Props) => {
   } = useForm({
     resolver: zodResolver(schema),
     mode: 'onBlur',
+    // mode: 'onSubmit',
   });
   useEffect(() => {
     const fetchPrefixAndNational = async () => {

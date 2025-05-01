@@ -136,15 +136,18 @@ export const getSpectial = async () => {
   }
 };
 
-export const checkUniq = async (email: string) => {
+export const checkUniq = async (
+  key: 'email' | 'national_id'|'student_code',
+  value: string,
+) => {
   try {
     const response = await api.post(`${API_GET.CHECK_UNIQ}`, {
-      email: email,
+      [key]: value, // ใช้ dynamic key
     });
     return response.data;
   } catch (error: any) {
     if (error.response?.status === 409) {
-      const msg = error.response.data?.message?.message || 'อีเมลซ้ำ';
+      const msg = error.response.data?.message?.message || 'ซ้ำ';
       console.warn(msg);
       return { duplicated: true, message: msg }; // ส่งข้อมูลให้เรียกใช้งานต่อได้
     }
