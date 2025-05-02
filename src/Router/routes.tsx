@@ -27,7 +27,7 @@ export const appRoutes = [
     layout: 'DefaultLayout',
     title: 'ทะเบียนนักศึกษา',
     protected: true,
-    roles: ['superadmin', 'admin', 'student'],
+    roles: ['superadmin', 'admin'],
     icon: <HiUser size={15} />,
   },
   {

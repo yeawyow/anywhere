@@ -22,7 +22,6 @@ import ThaiAddressSelect from './SelectGroup/ThaiAddressSelect';
 import { AppDispatch } from '../../app/store';
 import InputField from './input/InputField';
 import { getGenderFromPrefix } from '../../features/function';
-import { fetchStudentData } from '../../features/data/studentslice';
 import Radio from '../Forms/input/Radio';
 import ImageUploader from './input/ImageUploaderWithPreview';
 
@@ -77,9 +76,12 @@ interface Occupat {
   occupation_name: string;
   [key: string]: string | number;
 }
-
-interface Props {
+interface StudentRegistrationFormProps {
   onClose: () => void;
+}
+interface StudentRegistrationFormProps {
+  onClose: () => void;
+  fectStudent: () => void; // เพิ่ม fectStudent
 }
 const schema = z.object({
   prefix_id: z
@@ -119,8 +121,9 @@ const schema = z.object({
     .length(13, { message: 'เลขบัตรประชาชนต้องมีความยาว 13 หลัก' })
     .regex(/^\d{13}$/, { message: 'เลขบัตรประชาชนต้องเป็นตัวเลขเท่านั้น' })
     .superRefine(async (national_id, ctx) => {
+      if (ctx.path[0] !== 'national_id') return;
       const exists = await checkUniq('national_id', national_id);
-      if (!exists.success) {
+      if (exists.duplicated) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: exists.message,
@@ -144,8 +147,9 @@ const schema = z.object({
     // .length(4, { message: 'รหัสไม่เกิน 4 หลัก' })
     .regex(/^\d{4}$/, { message: 'รหัส 4เป็นตัวเลข' })
     .superRefine(async (student_code, ctx) => {
+      if (ctx.path[0] !== 'student_code') return;
       const exists = await checkUniq('student_code', student_code);
-      if (!exists.success) {
+      if (exists.duplicated) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: exists.message,
@@ -156,8 +160,10 @@ const schema = z.object({
     .string({ required_error: 'กรุณากรอกอีเมลล์' })
     .email({ message: 'รูปแบบอีเมลไม่ถูกต้อง' })
     .superRefine(async (email, ctx) => {
+      if (ctx.path[0] !== 'email') return; // เช็คเฉพาะฟิลด์ email เท่านั้น
+
       const exists = await checkUniq('email', email);
-      if (!exists.success) {
+      if (exists.duplicated) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: exists.message,
@@ -189,7 +195,10 @@ const schema = z.object({
   guardian_nationality_id: z.number().optional(),
 });
 
-const StudentRegister = ({ onClose }: Props) => {
+const StudentRegister = ({
+  onClose,
+  fectStudent,
+}: StudentRegistrationFormProps) => {
   const dispatch = useDispatch<AppDispatch>(); // ใช้ AppDispatch
   const [prefixes, setPrefixes] = useState<Prefix[]>([]);
   const [genderId, setGenderId] = useState(0);
@@ -206,7 +215,7 @@ const StudentRegister = ({ onClose }: Props) => {
     useState<EducaInstitut | null>(null);
   const [enrollment_year, SetEnrollment_year] = useState<EnrollmentYear[]>([]);
   const [selectedEnrollment_year, SetselectedEnrollment_year] =
-    useState<EnrollmentTerm>();
+    useState<EnrollmentYear>();
   const [enrollmentTerm, SetEnrollmentTerm] = useState<EnrollmentYear[]>([]);
   const [selectedEnrollmentTerm, SetselectedEnrollmentTerm] =
     useState<EnrollmentTerm>();
@@ -239,8 +248,7 @@ const StudentRegister = ({ onClose }: Props) => {
   const [selectedGuardianOccupation, setselectedGuardianOccupation] =
     useState();
   const [selectedguardianNation, setselectedguardianNation] = useState();
-  const [avatarBlob, setAvatarBlob] = useState<Blob | null>(null);
-  console.log('avata', avatarBlob);
+  const [avatarBase64, setAvatarBase64] = useState<string | null>(null);
   const handleAgeChange = (newAge: number, birthdate: string) => {
     // console.log('Age selected:', newAge); // ดูค่าที่ส่งมา
     setAge(newAge); // รับค่าจาก BirthDatePicker
@@ -328,33 +336,31 @@ const StudentRegister = ({ onClose }: Props) => {
     field.onChange(selectedPrefix.id); // อัปเดตค่าของ prefix_id ในฟอร์ม
   };
 
-  // ใน onSubmit:
   const onSubmit = async (data: any) => {
     try {
       const formData = new FormData();
 
-      // รูปภาพ
-      if (data.profile_image instanceof File) {
-        formData.append('profile_image', data.profile_image);
+      if (avatarBase64) {
+        formData.append('image', avatarBase64); // ใช้ชื่อ "image" ตาม backend ต้องการ
       }
 
-      // วนข้อมูลอื่น ๆ
+      // เพิ่มข้อมูลอื่น ๆ จาก data ตามต้องการ
       Object.entries(data).forEach(([key, value]) => {
-        if (key === 'profile_image') return; // ข้ามรูป (เราจัดการไปแล้ว)
-
-        if (typeof value === 'number' || typeof value === 'string') {
+        if (value !== undefined && value !== null) {
           formData.append(key, String(value));
-        } else if (value !== undefined && value !== null) {
-          formData.append(key, JSON.stringify(value)); // สำหรับ object
         }
       });
-      await dispatch(registerStudent(formData));
-      onClose(); // ปิดฟอร์ม
-      dispatch(fetchStudentData()); // ดึงข้อมูลนักศึกษาหลังจากลงทะเบียน
-    } catch (error) {
-      console.error('Registration failed:', error);
+
+      const result = await dispatch(registerStudent(formData)); // หรือ fetch API แล้วแต่การส่ง
+      if (registerStudent.fulfilled.match(result)) {
+        await fectStudent(); // โหลดข้อมูลใหม่
+        onClose(); // ปิด modal
+      }
+    } catch (err) {
+      console.error('ส่งข้อมูลไม่สำเร็จ', err);
     }
   };
+  console.log('avata', avatarBase64);
   return (
     <>
       <div className="space-y-8">
@@ -597,7 +603,8 @@ const StudentRegister = ({ onClose }: Props) => {
                         SetselectedEnrollment_year(selectedEnrollment_year);
                         field.onChange(selectedEnrollment_year.id);
                       }}
-                      label={selectedEnrollment_year ? '' : 'เลือกปีการศึกษา'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
+                      label=""
+                      // label={selectedEnrollment_year ? '' : 'เลือกปีการศึกษา'} // ถ้าเลือกแล้วให้ label เป็นค่าว่าง
                       valueKey="id"
                       displayKey="enrollment_year_name"
                     />
@@ -673,7 +680,7 @@ const StudentRegister = ({ onClose }: Props) => {
               </div>
               <div>
                 <label className="block text-gray-600">รูปภาพนักศึกษา</label>
-                <ImageUploader onImageReady={setAvatarBlob} />
+                <ImageUploader onImageReady={setAvatarBase64} />
               </div>
             </div>
           </section>

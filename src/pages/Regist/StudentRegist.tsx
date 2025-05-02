@@ -57,10 +57,8 @@ export default function StudentRegist() {
         fullscreen={true}
       >
         <StudentRegistrationForm
-          // student={selectedStudent}
-          onClose={() => {
-            setIsOpen(false);
-          }}
+          onClose={() => setIsOpen(false)}
+          fectStudent={() => dispatch(fetchStudentData())}
         />
       </Modal>
     </>

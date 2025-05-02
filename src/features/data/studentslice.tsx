@@ -28,7 +28,7 @@ interface Student {
 interface StudentState {
   studentList: Student[];
   selectedStudent: Student | null;
-  studentFormData: Partial<Student>;
+  // studentFormData: Partial<Student>;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }
@@ -58,7 +58,7 @@ export const registerStudent = createAsyncThunk<
 const initialState: StudentState = {
   studentList: [],
   selectedStudent: null,
-  studentFormData: {},
+  // studentFormData: {},
   status: 'idle',
   error: null,
 };

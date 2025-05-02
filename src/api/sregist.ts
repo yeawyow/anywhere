@@ -76,8 +76,8 @@ export const getSubDistricts = async (districtId) => {
 export const getEnrollmentYear = async () => {
   try {
     const response = await api.get(`${API_GET.ENROLLMENT_YEARS}`);
+    console.log(response.data);
     return response.data;
-    getSubDistricts;
   } catch (error) {
     throw error;
   }
@@ -86,7 +86,6 @@ export const getEnrollmentTerm = async () => {
   try {
     const response = await api.get(`${API_GET.ENROLLMENT_TERM}`);
     return response.data;
-    getSubDistricts;
   } catch (error) {
     throw error;
   }
@@ -137,20 +136,21 @@ export const getSpectial = async () => {
 };
 
 export const checkUniq = async (
-  key: 'email' | 'national_id'|'student_code',
+  key: 'email' | 'national_id' | 'student_code',
   value: string,
 ) => {
   try {
     const response = await api.post(`${API_GET.CHECK_UNIQ}`, {
       [key]: value, // ใช้ dynamic key
     });
-    return response.data;
+    return { duplicated: false }; // ถ้าไม่มีปัญหาซ้ำ
   } catch (error: any) {
     if (error.response?.status === 409) {
-      const msg = error.response.data?.message?.message || 'ซ้ำ';
-      console.warn(msg);
-      return { duplicated: true, message: msg }; // ส่งข้อมูลให้เรียกใช้งานต่อได้
+      // ตรวจสอบว่ามีข้อความใน response หรือไม่
+      const msg = error.response?.data?.message?.message || 'ข้อมูลซ้ำ';
+      return { duplicated: true, message: msg }; // ส่งข้อมูลที่มีการซ้ำ
     }
+    // ถ้าไม่ใช่ error จากการซ้ำ ก็ throw error ทิ้งไป
     throw error;
   }
 };

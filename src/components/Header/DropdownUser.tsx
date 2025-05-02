@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
@@ -7,15 +7,21 @@ import { AppDispatch } from '../../app/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../features/auth/authslice';
 import { RootState } from '../../app/store';
+// import ImageComponent from '../Image/ImageComponent';
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const HandleLogout = () => {
     dispatch(logoutUser());
   };
-  const { user_info } = useSelector((state: RootState) => state.auth || {});
+  const { user_info }: any = useSelector(
+    (state: RootState) => state.auth || {},
+  );
+  // const avatar = user_info?.image.data || ' ';
   const first_name = user_info?.first_name_thai || 'ไม่ทราบชื่อ';
   const last_name = user_info?.last_name_thai || '';
+  const imageType = user_info?.image?.type || 'image/jpeg'; // เผื่อ fallback
+  const imageData = user_info?.image?.data || [];
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -31,7 +37,8 @@ const DropdownUser = () => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          {/* <AvatarImage type={imageType} data={imageData} />
+          <img src={UserOne} alt="User" /> */}
         </span>
 
         <svg

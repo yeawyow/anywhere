@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import FileInput from './FileInput';
 
 interface Props {
-  onImageReady: (blob: Blob | null) => void;
+  onImageReady: (base64: string | null) => void;
 }
 
 const ImageUploaderWithPreview: React.FC<Props> = ({ onImageReady }) => {
@@ -27,7 +27,14 @@ const ImageUploaderWithPreview: React.FC<Props> = ({ onImageReady }) => {
             (blob) => {
               if (blob) {
                 setPreviewUrl(URL.createObjectURL(blob));
-                onImageReady(blob); // ส่ง blob กลับ
+
+                // ✅ แปลง blob เป็น base64 string
+                const blobReader = new FileReader();
+                blobReader.onloadend = () => {
+                  const base64String = blobReader.result as string;
+                  onImageReady(base64String); // ✅ ส่ง base64 ไปยัง parent component
+                };
+                blobReader.readAsDataURL(blob);
               }
             },
             'image/jpeg',
